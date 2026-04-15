@@ -1,26 +1,52 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap');
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg: #F9F7F5;
+  --bg2: #FFFFFF;
+  --bg3: #F4F2EF;
+  --border: #E8E4DF;
+  --border2: #D4CEC7;
+  --pink: #C9209E;
+  --pink2: #E040B8;
+  --pink-dim: rgba(201,32,158,0.07);
+  --pink-glow: rgba(201,32,158,0.15);
+  --gold: #C89B2A;
+  --gold-dim: rgba(200,155,42,0.08);
+  --green: #1A9E5C;
+  --green-dim: rgba(26,158,92,0.08);
+  --blue: #2B6BE8;
+  --blue-dim: rgba(43,107,232,0.08);
+  --red: #D93535;
+  --red-dim: rgba(217,53,53,0.08);
+  --orange: #C96B10;
+  --text: #1A1714;
+  --text2: #4A4440;
+  --text3: #7A7068;
+  --font-d: 'DM Serif Display', serif;
+  --font-s: 'DM Sans', sans-serif;
+  --ease: cubic-bezier(0.16,1,0.3,1);
+  --r: 16px;
+  --rs: 12px;
+  --shadow: 0 2px 12px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04);
+  --shadow-md: 0 8px 32px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.04);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { font-size: 16px; scroll-behavior: smooth; }
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-s);
+  background: var(--bg);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.7); }
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
