@@ -159,10 +159,22 @@ input::placeholder { color: var(--text3); font-weight: 400; }
 .topbar { background: var(--bg2); border-bottom: 1px solid var(--border); padding: 0.85rem 1.5rem; display: flex; align-items: center; justify-content: space-between; }
 .topbar-brand { font-family: var(--font-d); font-size: 1.3rem; }
 .topbar-brand span { color: var(--pink); }
-.topbar-right { display: flex; align-items: center; gap: 1rem; }
+.topbar-right { display: flex; align-items: center; gap: 0.75rem; }
 .topbar-user { font-size: 0.78rem; color: var(--text2); }
 .btn-logout { font-size: 0.78rem; font-weight: 600; color: var(--text3); background: transparent; border: 1.5px solid var(--border); border-radius: 8px; padding: 0.4rem 0.85rem; cursor: pointer; transition: all 0.2s; font-family: var(--font-s); }
 .btn-logout:hover { border-color: var(--border2); color: var(--text); }
+
+/* ── Avatar ─────────────────────────────────────────── */
+.avatar-wrap { position: relative; display: flex; align-items: center; }
+.avatar-btn { position: relative; width: 36px; height: 36px; border-radius: 50%; border: 2px solid var(--border); background: var(--pink-dim); cursor: pointer; overflow: hidden; padding: 0; flex-shrink: 0; transition: border-color 0.2s, box-shadow 0.2s; }
+.avatar-btn:hover { border-color: var(--pink); box-shadow: 0 0 0 3px var(--pink-glow); }
+.avatar-img { width: 100%; height: 100%; object-fit: cover; display: block; border-radius: 50%; }
+.avatar-initials { font-family: var(--font-s); font-size: 0.72rem; font-weight: 700; color: var(--pink); display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; user-select: none; }
+.avatar-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.45); border-radius: 50%; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.2s; }
+.avatar-btn:hover .avatar-overlay { opacity: 1; }
+.avatar-cam-icon { width: 14px; height: 14px; stroke: #fff; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.avatar-remove { position: absolute; top: -4px; right: -4px; width: 16px; height: 16px; border-radius: 50%; background: var(--red); border: 1.5px solid var(--bg2); color: #fff; font-size: 0.65rem; font-weight: 700; line-height: 1; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 0; z-index: 1; transition: background 0.15s; }
+.avatar-remove:hover { background: #b52020; }
 
 /* ── Footer ─────────────────────────────────────────── */
 footer { opacity: 0.75; text-align: center; padding: 2.5rem 1rem 2rem; border-top: 1px solid var(--border); }

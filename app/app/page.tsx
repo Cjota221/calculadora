@@ -10,6 +10,7 @@ import { TabFrete } from '@/components/calculadora/TabFrete'
 import { TabEquilibrio } from '@/components/calculadora/TabEquilibrio'
 import { TabGuia } from '@/components/calculadora/TabGuia'
 import { Toast } from '@/components/ui/Toast'
+import { UserAvatar } from '@/components/ui/UserAvatar'
 import { Footer } from '@/components/layout/Footer'
 import type { Tab } from '@/types'
 import '@/styles/calculadora.css'
@@ -43,7 +44,8 @@ export default function AppPage() {
       <div className="topbar">
         <div className="topbar-brand">Precifique<span>.</span></div>
         <div className="topbar-right">
-          <span className="topbar-user">{user?.nome}</span>
+          {user && <UserAvatar nome={user.nome} />}
+          <span className="topbar-user">{user?.nome.split(' ')[0]}</span>
           <button className="btn-logout" onClick={logout}>Sair</button>
         </div>
       </div>
