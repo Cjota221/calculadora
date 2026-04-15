@@ -1,32 +1,25 @@
 'use client'
 import { useState, useEffect, useCallback } from 'react'
+import { AdminLogin } from '@/components/admin/AdminLogin'
+import { StatsCards } from '@/components/admin/StatsCards'
+import { CreateUserForm } from '@/components/admin/CreateUserForm'
+import { UsersTable } from '@/components/admin/UsersTable'
+import { TopbarAdmin } from '@/components/layout/TopbarAdmin'
+import { Toast } from '@/components/ui/Toast'
+import type { PrecifiqueUser } from '@/types'
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const SUPABASE_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-const ADMIN_PASSWORD = 'carol2025'
-
-interface User {
-  id: string
-  nome: string
-  username: string
-  whatsapp: string
-  ativo: boolean
-  created_at: string
-  ultimo_acesso: string | null
-}
-
-async function hashPassword(password: string): Promise<string> {
-  const encoder = new TextEncoder()
-  const data = encoder.encode(password)
-  const hashBuffer = await crypto.subtle.digest('SHA-256', data)
-  const hashArray = Array.from(new Uint8Array(hashBuffer))
-  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('')
-}
 
 async function sbFetch(path: string, method = 'GET', body?: object) {
   const opts: RequestInit = {
     method,
-    headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json', Prefer: 'return=representation' }
+    headers: {
+      apikey: SUPABASE_KEY,
+      Authorization: `Bearer ${SUPABASE_KEY}`,
+      'Content-Type': 'application/json',
+      Prefer: 'return=representation',
+    },
   }
   if (body) opts.body = JSON.stringify(body)
   const res = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, opts)
@@ -35,19 +28,13 @@ async function sbFetch(path: string, method = 'GET', body?: object) {
 
 export default function Admin() {
   const [authed, setAuthed] = useState(false)
-  const [pwd, setPwd] = useState('')
-  const [pwdError, setPwdError] = useState(false)
-  const [users, setUsers] = useState<User[]>([])
+  const [users, setUsers] = useState<PrecifiqueUser[]>([])
   const [toast, setToast] = useState('')
   const [toastVisible, setToastVisible] = useState(false)
-  const [creating, setCreating] = useState(false)
-  const [newNome, setNewNome] = useState('')
-  const [newWhats, setNewWhats] = useState('')
-  const [newUser, setNewUser] = useState('')
-  const [newPass, setNewPass] = useState('')
 
   function showToast(msg: string) {
-    setToast(msg); setToastVisible(true)
+    setToast(msg)
+    setToastVisible(true)
     setTimeout(() => setToastVisible(false), 2600)
   }
 
@@ -56,31 +43,9 @@ export default function Admin() {
     setUsers(data || [])
   }, [])
 
-  useEffect(() => { if (authed) loadUsers() }, [authed, loadUsers])
-
-  function adminLogin() {
-    if (pwd === ADMIN_PASSWORD) { setAuthed(true) }
-    else { setPwdError(true); setTimeout(() => setPwdError(false), 2000) }
-  }
-
-  async function criarAcesso() {
-    if (!newNome || !newUser || !newPass) { showToast('Preencha nome, login e senha'); return }
-    setCreating(true)
-    try {
-      const hash = await hashPassword(newPass)
-      const res = await sbFetch('precifique_users', 'POST', { nome: newNome, whatsapp: newWhats, username: newUser.toLowerCase(), password_hash: hash, ativo: true })
-      if (res && res[0] && res[0].id) {
-        showToast(`Acesso criado para ${newNome}!`)
-        setNewNome(''); setNewWhats(''); setNewUser(''); setNewPass('')
-        loadUsers()
-      } else if (res && res.code === '23505') {
-        showToast('Esse login já existe. Escolha outro.')
-      } else {
-        showToast('Erro ao criar acesso. Tente novamente.')
-      }
-    } catch { showToast('Erro de conexão.') }
-    setCreating(false)
-  }
+  useEffect(() => {
+    if (authed) loadUsers()
+  }, [authed, loadUsers])
 
   async function toggleUser(id: string, ativo: boolean) {
     await sbFetch(`precifique_users?id=eq.${id}`, 'PATCH', { ativo })
@@ -94,29 +59,11 @@ export default function Admin() {
     return (
       <>
         <style>{`
-          body{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:1.5rem;background:var(--bg)}
-          .login-card{width:100%;max-width:380px;background:var(--bg2);border:1px solid var(--border);border-radius:24px;padding:2.5rem 2rem;box-shadow:0 8px 40px rgba(0,0,0,0.08)}
-          .login-card h1{font-family:var(--font-d);font-size:1.6rem;margin-bottom:0.3rem}
-          .login-card p{font-size:0.8rem;color:var(--text3);margin-bottom:1.75rem}
+          .login-card{background:var(--bg2);border:1px solid var(--border);border-radius:24px;padding:2.5rem 2rem;box-shadow:0 8px 40px rgba(0,0,0,0.08)}
           .field{margin-bottom:1rem}
           .field label{display:block;font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text3);margin-bottom:0.4rem}
-          .field input{width:100%;padding:0.82rem 1rem;background:var(--bg3);border:1.5px solid var(--border);border-radius:11px;font-family:var(--font-s);font-size:0.93rem;color:var(--text);outline:none;transition:border-color 0.2s,box-shadow 0.2s}
-          .field input:focus{border-color:rgba(201,32,158,0.35);box-shadow:0 0 0 3px rgba(201,32,158,0.06)}
-          .field input::placeholder{color:var(--text3)}
-          .error-box{background:var(--red-dim);border:1px solid rgba(217,53,53,0.2);border-radius:9px;padding:0.65rem 1rem;font-size:0.8rem;color:var(--red);margin-top:0.5rem;font-weight:500}
-          .btn-primary{width:100%;padding:0.9rem 1.5rem;background:var(--pink);color:#fff;border:none;border-radius:11px;font-family:var(--font-s);font-size:0.9rem;font-weight:600;cursor:pointer;transition:all 0.2s var(--ease);box-shadow:0 4px 14px rgba(201,32,158,0.22)}
-          .btn-primary:hover{background:var(--pink2);transform:translateY(-1px)}
         `}</style>
-        <div className="login-card">
-          <h1>Painel Admin</h1>
-          <p>Precifique — Área restrita</p>
-          <div className="field">
-            <label>Senha de administrador</label>
-            <input type="password" placeholder="Senha admin" value={pwd} onChange={e => setPwd(e.target.value)} onKeyDown={e => e.key === 'Enter' && adminLogin()} />
-          </div>
-          <button className="btn-primary" onClick={adminLogin}>Entrar no painel</button>
-          {pwdError && <div className="error-box">Senha incorreta.</div>}
-        </div>
+        <AdminLogin onSuccess={() => setAuthed(true)} />
       </>
     )
   }
@@ -175,77 +122,22 @@ export default function Admin() {
         .toast.show{transform:translateX(-50%) translateY(0)}
       `}</style>
 
-      <div className="topbar">
-        <div className="topbar-brand">Precifique<span>.</span> <span className="topbar-tag">Admin</span></div>
-        <div className="topbar-right">
-          <span className="topbar-user">Carolina Azevedo</span>
-          <button className="btn-logout" onClick={() => setAuthed(false)}>Sair</button>
-        </div>
-      </div>
+      <TopbarAdmin onLogout={() => setAuthed(false)} />
 
       <div className="main">
-        <div className="stats">
-          <div className="stat-card"><div className="stat-val">{users.length}</div><div className="stat-lbl">Total de acessos</div></div>
-          <div className="stat-card"><div className="stat-val" style={{color:'var(--green)'}}>{ativos}</div><div className="stat-lbl">Acessos ativos</div></div>
-          <div className="stat-card"><div className="stat-val" style={{color:'var(--red)'}}>{users.length - ativos}</div><div className="stat-lbl">Bloqueados</div></div>
-        </div>
+        <StatsCards total={users.length} ativos={ativos} bloqueados={users.length - ativos} />
 
         <h2 className="section-title">Criar novo acesso</h2>
-        <div className="create-card">
-          <div className="form-grid">
-            <div className="field"><label>Nome da cliente</label><input type="text" placeholder="Ex: Maria Silva" value={newNome} onChange={e => setNewNome(e.target.value)} /></div>
-            <div className="field"><label>WhatsApp</label><input type="text" placeholder="Ex: 62999999999" value={newWhats} onChange={e => setNewWhats(e.target.value)} /></div>
-            <div className="field"><label>Login (usuário)</label><input type="text" placeholder="Ex: mariasilva" value={newUser} onChange={e => setNewUser(e.target.value)} /></div>
-            <div className="field"><label>Senha</label><input type="text" placeholder="Crie uma senha" value={newPass} onChange={e => setNewPass(e.target.value)} /></div>
-          </div>
-          <button className="btn btn-primary" onClick={criarAcesso} disabled={creating}>
-            {creating ? 'Criando...' : 'Criar acesso'}
-          </button>
-        </div>
+        <CreateUserForm
+          onCreated={nome => { showToast(`Acesso criado para ${nome}!`); loadUsers() }}
+          onError={showToast}
+        />
 
         <h2 className="section-title">Clientes com acesso</h2>
-        <div className="table-wrap">
-          <div className="table-head">
-            <h3>Todos os acessos</h3>
-            <button className="btn btn-sm btn-refresh" onClick={loadUsers}>Atualizar</button>
-          </div>
-          {users.length === 0 ? (
-            <div className="empty-state">Nenhum acesso criado ainda.</div>
-          ) : (
-            <table>
-              <thead>
-                <tr>
-                  <th>Nome</th><th>Login</th><th>WhatsApp</th><th>Criado em</th><th>Último acesso</th><th>Status</th><th>Ações</th>
-                </tr>
-              </thead>
-              <tbody>
-                {users.map(u => (
-                  <tr key={u.id}>
-                    <td><strong>{u.nome}</strong></td>
-                    <td>{u.username}</td>
-                    <td>
-                      {u.whatsapp
-                        ? <a href={`https://wa.me/55${u.whatsapp.replace(/\D/g, '')}`} target="_blank" rel="noreferrer" style={{color:'var(--green)',textDecoration:'none'}}>{u.whatsapp}</a>
-                        : '—'}
-                    </td>
-                    <td>{u.created_at ? new Date(u.created_at).toLocaleDateString('pt-BR') : '—'}</td>
-                    <td>{u.ultimo_acesso ? new Date(u.ultimo_acesso).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', year: '2-digit', hour: '2-digit', minute: '2-digit' }) : 'Nunca'}</td>
-                    <td><span className={`badge ${u.ativo ? 'badge-on' : 'badge-off'}`}>{u.ativo ? 'Ativo' : 'Bloqueado'}</span></td>
-                    <td>
-                      {u.ativo
-                        ? <button className="btn btn-sm btn-danger" onClick={() => toggleUser(u.id, false)}>Bloquear</button>
-                        : <button className="btn btn-sm btn-success" onClick={() => toggleUser(u.id, true)}>Ativar</button>
-                      }
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
-        </div>
+        <UsersTable users={users} onToggle={toggleUser} onRefresh={loadUsers} />
       </div>
 
-      <div className={`toast${toastVisible ? ' show' : ''}`}>{toast}</div>
+      <Toast message={toast} visible={toastVisible} />
     </>
   )
 }
