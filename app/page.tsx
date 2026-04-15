@@ -1,5 +1,7 @@
 import Link from 'next/link'
 
+const MP_LINK = process.env.NEXT_PUBLIC_MP_LINK || '#'
+
 export default function Landing() {
   return (
     <>
@@ -74,7 +76,7 @@ export default function Landing() {
         </div>
 
         <div className="cta-wrap">
-          <a href="LINK_MERCADO_PAGO_AQUI" className="btn-buy">
+          <a href={MP_LINK} className="btn-buy">
             <svg viewBox="0 0 24 24" width="18" height="18" fill="#fff"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
             Quero meu acesso por R$ 24,99
           </a>
@@ -140,7 +142,7 @@ export default function Landing() {
         <h2>Pronta para precificar<br /><em style={{fontStyle:'italic',color:'var(--pink)'}}>com inteligência?</em></h2>
         <p className="cta-bottom-p">Pare de perder dinheiro por preço errado. Invista R$ 24,99 uma única vez e lucre para sempre.</p>
         <div className="cta-wrap">
-          <a href="LINK_MERCADO_PAGO_AQUI" className="btn-buy" style={{maxWidth:'100%'}}>
+          <a href={MP_LINK} className="btn-buy" style={{maxWidth:'100%'}}>
             <svg viewBox="0 0 24 24" width="18" height="18" fill="#fff"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/></svg>
             Quero meu acesso agora — R$ 24,99
           </a>
