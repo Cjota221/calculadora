@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@300;400;500;600;700;800&family=Lexend+Giga:wght@300;400;500;600;700;800&display=swap');
 @import "tailwindcss";
 
 :root {
@@ -34,20 +34,20 @@
   --text3: #6B6360;
 
   /* Typography */
-  --font-d: 'DM Serif Display', serif;
-  --font-s: 'DM Sans', sans-serif;
+  --font-d: 'Lexend Giga', sans-serif;   /* display: títulos, wordmark, números grandes */
+  --font-s: 'Lexend Deca', sans-serif;   /* body: UI, labels, inputs, botões */
 
-  /* Font scale (use these, don't freestyle) */
+  /* Font scale (use estas, não invente tamanhos) */
   --fs-xs:   0.72rem;   /* labels, badges, hints */
-  --fs-sm:   0.82rem;   /* secondary text, descriptions */
-  --fs-base: 1rem;      /* inputs, body */
-  --fs-md:   1.1rem;    /* card titles */
-  --fs-lg:   1.4rem;    /* section subtitles */
+  --fs-sm:   0.82rem;   /* texto secundário, descrições */
+  --fs-base: 1rem;      /* inputs, corpo */
+  --fs-md:   1.05rem;   /* títulos de card */
+  --fs-lg:   1.3rem;    /* subtítulos de seção */
 
-  /* Radius */
-  --radius:    16px;
-  --radius-sm: 12px;
-  --radius-xs: 8px;
+  /* Radius — tudo arredondado */
+  --radius:    24px;
+  --radius-sm: 16px;
+  --radius-xs: 10px;
 
   /* Shadow */
   --shadow:    0 2px 12px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04);
