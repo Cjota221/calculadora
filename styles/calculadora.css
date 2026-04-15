@@ -41,7 +41,7 @@
 .pfx { left: 13px; }
 .sfx { right: 13px; }
 .input-wrap:focus-within .pfx, .input-wrap:focus-within .sfx { color: var(--pink); }
-input[type=number], input[type=text] { width: 100%; padding: 0.82rem 1rem; background: var(--bg3); border: 1.5px solid var(--border); border-radius: var(--radius-sm); font-family: var(--font-s); font-size: 0.93rem; font-weight: 500; color: var(--text); transition: border-color 0.2s, box-shadow 0.2s; outline: none; -moz-appearance: textfield; }
+input[type=number], input[type=text] { width: 100%; padding: 0.82rem 1rem; background: var(--bg3); border: 1.5px solid var(--border); border-radius: var(--radius-sm); font-family: var(--font-s); font-size: 1rem; font-weight: 500; color: var(--text); transition: border-color 0.2s, box-shadow 0.2s; outline: none; -moz-appearance: textfield; }
 input[type=number].has-pfx { padding-left: 2.1rem; }
 input[type=number].has-sfx, input[type=text].has-sfx { padding-right: 2.4rem; }
 input[type=number]::-webkit-outer-spin-button, input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; }
@@ -49,16 +49,21 @@ input[type=number]:focus, input[type=text]:focus { border-color: rgba(201,32,158
 input::placeholder { color: var(--text3); font-weight: 400; }
 .field-hint { font-size: 0.69rem; color: var(--text3); margin-top: 0.3rem; line-height: 1.5; }
 
+/* ── Frete Atalho ───────────────────────────────────── */
+.frete-atalho { display: flex; align-items: center; gap: 0.4rem; margin-top: 0.35rem; padding: 0.4rem 0.75rem; background: var(--green-dim); border: 1px solid rgba(26,158,92,0.2); border-radius: 8px; font-family: var(--font-s); font-size: 0.75rem; font-weight: 600; color: var(--green); cursor: pointer; transition: all 0.2s; width: 100%; }
+.frete-atalho:hover { background: rgba(26,158,92,0.14); border-color: rgba(26,158,92,0.4); }
+.frete-atalho svg { width: 12px; height: 12px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; flex-shrink: 0; }
+
 /* ── Dynamic Rows ───────────────────────────────────── */
 .row-list { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 0.6rem; }
 .drow, .trow { display: grid; gap: 0.5rem; align-items: center; }
 .drow { grid-template-columns: 1fr auto auto; }
 .trow { grid-template-columns: 1fr auto auto; }
-.drow input[type=text], .trow input[type=text] { font-size: 0.87rem; }
-.drow input[type=number], .trow input[type=number] { font-size: 0.87rem; padding: 0.7rem 2.2rem 0.7rem 0.85rem; }
+.drow input[type=text], .trow input[type=text] { font-size: 1rem; }
+.drow input[type=number], .trow input[type=number] { font-size: 1rem; padding: 0.7rem 2.2rem 0.7rem 0.85rem; }
 .trow input[type=number] { padding: 0.7rem 2.4rem 0.7rem 0.85rem; }
 .sfx-sm { right: 10px; font-size: 0.8rem; }
-.row-remove { width: 30px; height: 30px; flex-shrink: 0; border: 1.5px solid var(--border); border-radius: 8px; background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--text3); transition: all 0.15s; }
+.row-remove { width: 44px; height: 44px; flex-shrink: 0; border: 1.5px solid var(--border); border-radius: 10px; background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--text3); transition: all 0.15s; }
 .row-remove:hover { border-color: var(--red); color: var(--red); background: var(--red-dim); }
 .btn-add-row { display: flex; align-items: center; gap: 0.4rem; background: transparent; border: 1.5px dashed var(--border2); border-radius: var(--radius-sm); padding: 0.6rem 1rem; font-family: var(--font-s); font-size: 0.8rem; font-weight: 500; color: var(--text3); cursor: pointer; transition: all 0.2s; width: 100%; justify-content: center; }
 .btn-add-row:hover { border-color: var(--pink); color: var(--pink); background: var(--pink-dim); }

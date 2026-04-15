@@ -71,6 +71,8 @@ export default function AppPage() {
             onAddTaxa={() => calc.addRow(calc.setTaxas)}
             onRemoveTaxa={id => calc.removeRow(calc.setTaxas, id, calc.taxas)}
             onUpdateTaxa={(id, field, val) => calc.updateRow(calc.setTaxas, id, field, val)}
+            freteCalculado={frete.result?.unit ?? null}
+            onUsarFreteCalculado={() => usarFrete(frete.result!.unit)}
             result={calc.result}
             discount={calc.discount} setDiscount={calc.setDiscount}
             promoOpen={calc.promoOpen} onTogglePromo={() => calc.setPromoOpen(o => !o)}

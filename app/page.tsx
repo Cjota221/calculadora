@@ -1,3 +1,4 @@
+import '@/styles/landing.css'
 import { Navbar } from '@/components/layout/Navbar'
 import { Hero } from '@/components/landing/Hero'
 import { Features } from '@/components/landing/Features'
@@ -8,60 +9,6 @@ import { Footer } from '@/components/layout/Footer'
 export default function Landing() {
   return (
     <>
-      <style>{`
-        nav{display:flex;align-items:center;justify-content:space-between;padding:1.1rem 1.5rem;background:var(--bg2);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100}
-        .nav-brand{font-family:var(--font-d);font-size:1.4rem;color:var(--text)}
-        .nav-brand span{color:var(--pink)}
-        .nav-login{font-size:0.82rem;font-weight:600;color:var(--pink);text-decoration:none;padding:0.5rem 1.1rem;border:1.5px solid rgba(201,32,158,0.3);border-radius:99px;transition:all 0.2s}
-        .nav-login:hover{background:var(--pink-dim)}
-        .hero{text-align:center;padding:4rem 1.5rem 3rem;max-width:640px;margin:0 auto}
-        .hero-badge{display:inline-flex;align-items:center;gap:0.45rem;font-size:0.72rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--pink);background:var(--pink-dim);border:1px solid rgba(201,32,158,0.2);padding:0.35rem 1rem;border-radius:99px;margin-bottom:1.5rem}
-        .hero-badge::before{content:'';width:6px;height:6px;background:var(--pink);border-radius:50%;animation:pulse 2s ease infinite}
-        .hero h1{font-family:var(--font-d);font-size:clamp(2.4rem,6vw,3.6rem);font-weight:400;line-height:1.1;margin-bottom:1.25rem}
-        .hero h1 em{font-style:italic;color:var(--pink)}
-        .hero-p{font-size:1rem;color:var(--text2);line-height:1.7;margin-bottom:2.5rem;font-weight:300}
-        .price-block{display:inline-flex;flex-direction:column;align-items:center;background:var(--bg2);border:1.5px solid var(--border);border-radius:20px;padding:1.5rem 2.5rem;margin-bottom:2rem;box-shadow:var(--shadow)}
-        .price-from{font-size:0.75rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.2rem}
-        .price-val{font-family:var(--font-d);font-size:3rem;color:var(--text);line-height:1}
-        .price-val sup{font-family:var(--font-s);font-size:1.2rem;font-weight:600;vertical-align:top;margin-top:0.4rem;display:inline-block}
-        .price-val sub{font-family:var(--font-s);font-size:1.5rem;vertical-align:bottom}
-        .price-type{font-size:0.78rem;color:var(--green);font-weight:600;margin-top:0.35rem;letter-spacing:0.02em}
-        .btn-buy{display:inline-flex;align-items:center;justify-content:center;gap:0.6rem;width:100%;max-width:380px;padding:1.1rem 2rem;background:var(--pink);color:#fff;border:none;border-radius:14px;font-family:var(--font-s);font-size:1rem;font-weight:700;cursor:pointer;text-decoration:none;box-shadow:0 6px 24px rgba(201,32,158,0.3);transition:all 0.2s var(--ease);letter-spacing:0.01em}
-        .btn-buy:hover{background:var(--pink2);transform:translateY(-2px);box-shadow:0 10px 30px rgba(201,32,158,0.4)}
-        .btn-wpp{display:inline-flex;align-items:center;justify-content:center;gap:0.6rem;width:100%;max-width:380px;padding:0.9rem 2rem;margin-top:0.75rem;background:transparent;color:#1A9E5C;border:1.5px solid rgba(26,158,92,0.3);border-radius:14px;font-family:var(--font-s);font-size:0.9rem;font-weight:600;text-decoration:none;transition:all 0.2s}
-        .btn-wpp:hover{background:rgba(26,158,92,0.06);border-color:rgba(26,158,92,0.5)}
-        .hero-note{font-size:0.72rem;color:var(--text3);margin-top:1rem}
-        .features{padding:3rem 1.5rem;max-width:680px;margin:0 auto}
-        .section-label{font-size:0.7rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--pink);text-align:center;margin-bottom:0.6rem}
-        .section-title{font-family:var(--font-d);font-size:clamp(1.6rem,4vw,2.2rem);text-align:center;margin-bottom:2.5rem;line-height:1.2}
-        .features-grid{display:grid;grid-template-columns:1fr;gap:1rem}
-        @media(min-width:560px){.features-grid{grid-template-columns:1fr 1fr}}
-        .feat-card{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:1.4rem;transition:border-color 0.2s,box-shadow 0.2s}
-        .feat-card:hover{border-color:var(--border2);box-shadow:var(--shadow)}
-        .feat-icon{width:38px;height:38px;border-radius:10px;background:var(--pink-dim);border:1px solid rgba(201,32,158,0.12);display:flex;align-items:center;justify-content:center;margin-bottom:0.85rem}
-        .feat-icon svg{width:17px;height:17px;stroke:var(--pink);fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
-        .feat-card h3{font-family:var(--font-d);font-size:1rem;font-weight:400;margin-bottom:0.4rem}
-        .feat-card p{font-size:0.82rem;color:var(--text2);line-height:1.6}
-        .how{padding:3rem 1.5rem;background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
-        .how-inner{max-width:560px;margin:0 auto;text-align:center}
-        .steps{display:flex;flex-direction:column;gap:1rem;margin-top:2rem;text-align:left}
-        .step{display:flex;gap:1rem;align-items:flex-start}
-        .step-num{width:32px;height:32px;flex-shrink:0;border-radius:99px;background:var(--pink);color:#fff;font-family:var(--font-d);font-size:0.9rem;display:flex;align-items:center;justify-content:center;margin-top:2px}
-        .step-text h4{font-size:0.92rem;font-weight:600;margin-bottom:0.2rem}
-        .step-text p{font-size:0.82rem;color:var(--text2);line-height:1.55}
-        .cta-bottom{padding:3.5rem 1.5rem;text-align:center;max-width:480px;margin:0 auto}
-        .cta-bottom h2{font-family:var(--font-d);font-size:clamp(1.6rem,4vw,2.2rem);margin-bottom:0.75rem}
-        .cta-bottom-p{font-size:0.9rem;color:var(--text2);margin-bottom:2rem;line-height:1.6}
-        footer{text-align:center;padding:2rem 1rem;border-top:1px solid var(--border)}
-        .footer-name{font-family:var(--font-d);font-size:1.1rem;margin-bottom:0.5rem}
-        .footer-contacts{display:flex;flex-direction:column;align-items:center;gap:0.25rem}
-        .footer-link{display:inline-flex;align-items:center;gap:0.4rem;font-size:0.78rem;color:var(--text2);text-decoration:none;transition:color 0.2s}
-        .footer-link:hover{color:var(--pink)}
-        .footer-link svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round}
-        .footer-copy{font-size:0.67rem;color:var(--text3);margin-top:1rem}
-        .cta-wrap{display:flex;flex-direction:column;align-items:center}
-      `}</style>
-
       <Navbar />
       <Hero />
       <Features />

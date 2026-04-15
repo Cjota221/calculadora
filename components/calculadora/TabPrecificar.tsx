@@ -20,6 +20,8 @@ interface TabPrecificarProps {
   onAddTaxa: () => void
   onRemoveTaxa: (id: number) => void
   onUpdateTaxa: (id: number, field: 'label' | 'value', val: string) => void
+  freteCalculado?: number | null
+  onUsarFreteCalculado?: () => void
   result: CalcResult | null
   discount: string
   setDiscount: (v: string) => void
@@ -34,6 +36,7 @@ export function TabPrecificar({
   despesas, taxas,
   onAddDespesa, onRemoveDespesa, onUpdateDespesa,
   onAddTaxa, onRemoveTaxa, onUpdateTaxa,
+  freteCalculado, onUsarFreteCalculado,
   result, discount, setDiscount, promoOpen, onTogglePromo,
   onCalcular, onSendWhatsApp,
 }: TabPrecificarProps) {
@@ -67,7 +70,14 @@ export function TabPrecificar({
             <span className="pfx">R$</span>
             <input type="number" className="has-pfx" placeholder="0,00" step="0.01" min="0" value={freightUnit} onChange={e => setFreightUnit(e.target.value)} />
           </div>
-          <div className="field-hint">Use a aba Frete para calcular</div>
+          {freteCalculado && onUsarFreteCalculado ? (
+            <button className="frete-atalho" onClick={onUsarFreteCalculado}>
+              <svg viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4" /><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" /></svg>
+              Usar R$ {freteCalculado.toFixed(2).replace('.', ',')} calculado na aba Frete
+            </button>
+          ) : (
+            <div className="field-hint">Calcule na aba Frete e o valor será aplicado aqui</div>
+          )}
         </div>
       </div>
 
