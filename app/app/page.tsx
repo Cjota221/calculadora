@@ -44,7 +44,7 @@ export default function AppPage() {
       <div className="topbar">
         <div className="topbar-brand">Precifique<span>.</span></div>
         <div className="topbar-right">
-          {user && <UserAvatar nome={user.nome} />}
+          {user && <UserAvatar userId={user.id} nome={user.nome} initialData={user.avatar_data} />}
           <span className="topbar-user">{user?.nome.split(' ')[0]}</span>
           <button className="btn-logout" onClick={logout}>Sair</button>
         </div>

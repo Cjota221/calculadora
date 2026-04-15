@@ -33,7 +33,7 @@ export default function Login() {
     try {
       const hash = await hashPassword(password)
       const res = await fetch(
-        `${SUPABASE_URL}/rest/v1/precifique_users?username=eq.${encodeURIComponent(username)}&password_hash=eq.${hash}&ativo=eq.true&select=id,nome,username`,
+        `${SUPABASE_URL}/rest/v1/precifique_users?username=eq.${encodeURIComponent(username)}&password_hash=eq.${hash}&ativo=eq.true&select=id,nome,username,avatar_data`,
         { headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` } }
       )
       const data = await res.json()
@@ -44,7 +44,7 @@ export default function Login() {
           headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' },
           body: JSON.stringify({ ultimo_acesso: new Date().toISOString() })
         })
-        localStorage.setItem('precifique_user', JSON.stringify({ id: data[0].id, nome: data[0].nome, username: data[0].username }))
+        localStorage.setItem('precifique_user', JSON.stringify({ id: data[0].id, nome: data[0].nome, username: data[0].username, avatar_data: data[0].avatar_data ?? null }))
         router.replace('/app')
       } else {
         setError('Login ou senha incorretos.')

@@ -43,4 +43,5 @@ export interface PrecifiqueUser {
   ativo: boolean
   created_at: string
   ultimo_acesso: string | null
+  avatar_data?: string | null
 }

@@ -6,6 +6,7 @@ export interface PrecifiqueUser {
   id: string
   nome: string
   username: string
+  avatar_data?: string | null
 }
 
 export function useAuth() {
