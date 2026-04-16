@@ -18,9 +18,10 @@
 .hero-sub { font-size: var(--fs-base); color: var(--text2); line-height: 1.7; margin: 0 auto 2.5rem; font-weight: 300; max-width: 460px; }
 .hero-price-wrap { display: inline-flex; flex-direction: column; align-items: center; background: #fff; border: 1.5px solid var(--border); border-radius: var(--radius); padding: 1.5rem 2.5rem; margin-bottom: 2rem; box-shadow: 0 8px 40px rgba(124,58,237,0.1), 0 2px 8px rgba(0,0,0,0.04); }
 .hero-price-from { font-size: var(--fs-xs); color: var(--text3); text-transform: uppercase; letter-spacing: 0.09em; margin-bottom: 0.3rem; font-weight: 600; }
-.hero-price-val { font-family: var(--font-d); font-size: 3.2rem; font-weight: 800; color: var(--text); line-height: 1; }
-.hero-price-val sup { font-family: var(--font-d); font-size: 1.2rem; font-weight: 700; vertical-align: top; margin-top: 0.5rem; display: inline-block; color: var(--text2); }
-.hero-price-val sub { font-family: var(--font-d); font-size: 1.5rem; font-weight: 600; vertical-align: bottom; color: var(--text2); }
+.hero-price-val { display: flex; align-items: flex-start; justify-content: center; gap: 0.15rem; line-height: 1; }
+.price-cur { font-family: var(--font-d); font-size: 1.3rem; font-weight: 700; color: var(--text2); padding-top: 0.55rem; }
+.price-int { font-family: var(--font-d); font-size: 3.8rem; font-weight: 800; color: var(--text); }
+.price-dec { font-family: var(--font-d); font-size: 1.3rem; font-weight: 700; color: var(--text2); padding-top: 0.55rem; }
 .hero-price-tag { font-size: var(--fs-xs); color: var(--green); font-weight: 700; margin-top: 0.45rem; display: flex; align-items: center; justify-content: center; gap: 0.35rem; }
 .hero-price-tag::before { content: '✓'; }
 .hero-cta-wrap { display: flex; flex-direction: column; align-items: center; gap: 0.75rem; width: 100%; max-width: 400px; margin: 0 auto; }

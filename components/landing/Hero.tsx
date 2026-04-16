@@ -24,7 +24,9 @@ export function Hero() {
         <div className="hero-price-wrap">
           <div className="hero-price-from">Acesso único por apenas</div>
           <div className="hero-price-val">
-            <sup>R$</sup>24<sub>,99</sub>
+            <span className="price-cur">R$</span>
+            <span className="price-int">24</span>
+            <span className="price-dec">,99</span>
           </div>
           <div className="hero-price-tag">Paga uma vez · Acesso para sempre</div>
         </div>
