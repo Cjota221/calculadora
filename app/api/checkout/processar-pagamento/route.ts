@@ -10,6 +10,22 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Dados incompletos.' }, { status: 400 })
     }
 
+    // Verificar que userId + externalRef realmente existem e pertencem juntos
+    const { data: usuario, error: dbErr } = await supabaseAdmin
+      .from('usuarios_precifique')
+      .select('id, status')
+      .eq('id', userId)
+      .eq('mp_external_ref', externalRef)
+      .maybeSingle()
+
+    if (dbErr || !usuario) {
+      return NextResponse.json({ error: 'Sessão de pagamento inválida.' }, { status: 403 })
+    }
+
+    if (usuario.status === 'ativo') {
+      return NextResponse.json({ error: 'Esse acesso já está ativo. Faça login.' }, { status: 409 })
+    }
+
     const baseBody: Record<string, unknown> = {
       transaction_amount: 24.99,
       description: 'Precifique — Acesso Vitalício',

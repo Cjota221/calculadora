@@ -5,18 +5,18 @@ export async function GET(req: NextRequest) {
   const paymentId = req.nextUrl.searchParams.get('paymentId')
   const userId = req.nextUrl.searchParams.get('userId')
 
-  if (!paymentId && !userId) {
-    return NextResponse.json({ error: 'paymentId ou userId obrigatório.' }, { status: 400 })
+  // Exige os dois para cruzar — impede consulta avulsa
+  if (!paymentId || !userId) {
+    return NextResponse.json({ error: 'paymentId e userId são obrigatórios.' }, { status: 400 })
   }
 
-  const query = supabaseAdmin
+  const { data } = await supabaseAdmin
     .from('usuarios_precifique')
-    .select('status, ativado_em')
+    .select('status')
+    .eq('id', userId)
+    .eq('mp_payment_id', paymentId)
+    .maybeSingle()
 
-  if (paymentId) query.eq('mp_payment_id', paymentId)
-  else if (userId) query.eq('id', userId)
-
-  const { data } = await query.maybeSingle()
-
+  // Retorna apenas o status — sem dados extras
   return NextResponse.json({ status: data?.status ?? 'pendente' })
 }
