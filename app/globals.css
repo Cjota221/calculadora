@@ -3,19 +3,19 @@
 
 :root {
   /* Backgrounds */
-  --bg:      #F9F7F5;
+  --bg:      #F7F5FF;
   --bg2:     #FFFFFF;
-  --bg3:     #F4F2EF;
+  --bg3:     #F0EAFF;
 
   /* Borders */
-  --border:  #E8E4DF;
-  --border2: #D4CEC7;
+  --border:  #E2D8FF;
+  --border2: #C9B4F5;
 
   /* Brand */
-  --pink:     #C9209E;
-  --pink2:    #D930AB;
-  --pink-dim:  rgba(201,32,158,0.07);
-  --pink-glow: rgba(201,32,158,0.15);
+  --pink:     #7C3AED;
+  --pink2:    #8B5CF6;
+  --pink-dim:  rgba(124,58,237,0.08);
+  --pink-glow: rgba(124,58,237,0.18);
 
   /* Semantic colors */
   --gold:     #B8890A;
@@ -50,8 +50,8 @@
   --radius-xs: 10px;
 
   /* Shadow */
-  --shadow:    0 2px 12px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04);
-  --shadow-md: 0 8px 32px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.04);
+  --shadow:    0 2px 12px rgba(124,58,237,0.07), 0 1px 3px rgba(0,0,0,0.03);
+  --shadow-md: 0 8px 32px rgba(124,58,237,0.1), 0 2px 8px rgba(0,0,0,0.04);
 
   /* Motion */
   --ease: cubic-bezier(0.16,1,0.3,1);
@@ -61,7 +61,8 @@
 html { font-size: 16px; scroll-behavior: smooth; }
 body {
   font-family: var(--font-s);
-  background: var(--bg);
+  background: linear-gradient(160deg, #EDE3FF 0%, #F5F0FF 35%, var(--bg) 65%);
+  min-height: 100vh;
   color: var(--text);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
