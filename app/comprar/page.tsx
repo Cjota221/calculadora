@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 
-const WPP = `https://wa.me/5562822370750?text=${encodeURIComponent('Olá! Já paguei o Precifique e preciso de ajuda com meu acesso.')}`
+const WPP = `https://wa.me/5562982237075?text=${encodeURIComponent('Olá! Já paguei o Precifique e preciso de ajuda com meu acesso.')}`
 const MP_PK = process.env.NEXT_PUBLIC_MP_PUBLIC_KEY!
 
 type Metodo = 'pix' | 'cartao'

@@ -1,4 +1,4 @@
-const WPP_FLOAT = `https://wa.me/5562822370750?text=${encodeURIComponent('Olá! Quero saber mais sobre o Precifique.')}`
+const WPP_FLOAT = `https://wa.me/5562982237075?text=${encodeURIComponent('Olá! Quero saber mais sobre o Precifique.')}`
 
 export function Footer() {
   return (
