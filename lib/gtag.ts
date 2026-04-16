@@ -1,5 +1,13 @@
 export const GA_ID = 'G-5J3BJMJNKN'
 
+const PRODUTO = {
+  item_id: 'precifique_vitalicio',
+  item_name: 'Precifique — Acesso Vitalício',
+  price: 24.99,
+  quantity: 1,
+  currency: 'BRL',
+}
+
 // Pageview manual (para SPAs)
 export function pageview(url: string) {
   if (typeof window === 'undefined') return
@@ -16,13 +24,44 @@ export function event(action: string, params?: Record<string, unknown>) {
 
 // Eventos pré-definidos do Precifique
 export const ga = {
-  // Checkout
-  iniciarCheckout: () => event('begin_checkout', { currency: 'BRL', value: 24.99 }),
-  selecionarPix: () => event('select_payment_method', { payment_type: 'pix' }),
-  selecionarCartao: () => event('select_payment_method', { payment_type: 'cartao' }),
+  // Checkout — visualizou a página de compra
+  verPagina: () => event('view_item', {
+    currency: 'BRL',
+    value: 24.99,
+    items: [PRODUTO],
+  }),
+
+  // Checkout — clicou em pagar (preencheu form e submeteu)
+  iniciarCheckout: () => event('begin_checkout', {
+    currency: 'BRL',
+    value: 24.99,
+    items: [PRODUTO],
+  }),
+
+  // Selecionou forma de pagamento
+  selecionarPix: () => event('add_payment_info', {
+    currency: 'BRL',
+    value: 24.99,
+    payment_type: 'pix',
+    items: [PRODUTO],
+  }),
+  selecionarCartao: () => event('add_payment_info', {
+    currency: 'BRL',
+    value: 24.99,
+    payment_type: 'cartao_credito',
+    items: [PRODUTO],
+  }),
+
+  // Gerou Pix
   gerarPix: () => event('generate_pix', { currency: 'BRL', value: 24.99 }),
-  pagamentoCartao: () => event('payment_attempt', { payment_type: 'cartao' }),
-  compraConfirmada: () => event('purchase', { currency: 'BRL', value: 24.99, transaction_id: Date.now().toString() }),
+
+  // COMPRA CONFIRMADA — evento de conversão principal
+  compraConfirmada: (transactionId?: string) => event('purchase', {
+    transaction_id: transactionId ?? Date.now().toString(),
+    currency: 'BRL',
+    value: 24.99,
+    items: [PRODUTO],
+  }),
 
   // Login
   loginSucesso: () => event('login', { method: 'email' }),

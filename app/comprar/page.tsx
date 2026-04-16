@@ -59,6 +59,10 @@ export default function ComprarPage() {
   const pollingRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
   useEffect(() => {
+    ga.verPagina()
+  }, [])
+
+  useEffect(() => {
     return () => { if (pollingRef.current) clearInterval(pollingRef.current) }
   }, [])
 
@@ -118,7 +122,7 @@ export default function ComprarPage() {
         const data = await res.json()
         if (data.status === 'ativo') {
           clearInterval(pollingRef.current!)
-          ga.compraConfirmada()
+          ga.compraConfirmada(paymentId)
           setEtapa('sucesso')
           setTimeout(() => router.replace('/login?welcome=true'), 2000)
         }
@@ -176,7 +180,7 @@ export default function ComprarPage() {
         iniciarPolling(String(dataPag.paymentId), uid)
       } else {
         if (dataPag.status === 'approved') {
-          ga.compraConfirmada()
+          ga.compraConfirmada(String(dataPag.paymentId))
           setEtapa('sucesso')
           setTimeout(() => router.replace('/login?welcome=true'), 2000)
         } else {
