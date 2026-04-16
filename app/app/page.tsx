@@ -53,7 +53,7 @@ export default function AppPage() {
       <div className="wrapper">
         <header className="hero">
           <div className="hero-wordmark">Precifique<span className="dot">.</span></div>
-          <p className="hero-sub">Calcule preços, margens e ponto de equilíbrio com precisão</p>
+          <p className="app-hero-sub">Calcule preços, margens e ponto de equilíbrio com precisão</p>
         </header>
 
         <TabNav active={tab} onChange={setTab} />
