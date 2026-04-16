@@ -14,6 +14,13 @@ function pad(n: number) {
 
 export function OfertaBanner() {
   const [secs, setSecs] = useState(getSecondsUntilMidnight())
+  const [visible, setVisible] = useState(false)
+
+  useEffect(() => {
+    // Aparece após 2s para não poluir o carregamento inicial
+    const show = setTimeout(() => setVisible(true), 2000)
+    return () => clearTimeout(show)
+  }, [])
 
   useEffect(() => {
     const id = setInterval(() => setSecs(s => (s > 0 ? s - 1 : 0)), 1000)
@@ -24,42 +31,148 @@ export function OfertaBanner() {
   const m = Math.floor((secs % 3600) / 60)
   const s = secs % 60
 
+  if (!visible) return null
+
   return (
     <>
       <style>{`
-        .oferta-banner{background:linear-gradient(90deg,#5B21B6,#7C3AED,#6D28D9);padding:0.65rem 1rem;display:flex;align-items:center;justify-content:center;gap:0.75rem;flex-wrap:wrap;position:sticky;top:0;z-index:100}
-        .oferta-text{font-size:0.82rem;font-weight:600;color:#fff;text-align:center;line-height:1.4}
-        .oferta-text s{opacity:0.65;font-weight:400}
-        .oferta-timer{display:flex;align-items:center;gap:0.25rem;background:rgba(0,0,0,0.25);border-radius:8px;padding:0.3rem 0.65rem}
-        .timer-block{display:flex;flex-direction:column;align-items:center}
-        .timer-num{font-family:var(--font-d);font-size:1.05rem;font-weight:700;color:#fff;line-height:1}
-        .timer-sep{font-size:1rem;font-weight:700;color:rgba(255,255,255,0.5);margin:0 1px;align-self:flex-start;margin-top:1px}
-        .timer-lbl{font-size:0.48rem;text-transform:uppercase;letter-spacing:0.06em;color:rgba(255,255,255,0.55);margin-top:1px}
-        .oferta-btn{background:#fff;color:#7C3AED;font-size:0.78rem;font-weight:700;padding:0.4rem 1rem;border-radius:99px;text-decoration:none;white-space:nowrap;transition:opacity 0.15s;font-family:var(--font-s)}
-        .oferta-btn:hover{opacity:0.9}
-        @media(max-width:480px){.oferta-text{font-size:0.76rem}.oferta-btn{display:none}}
+        .oferta-float {
+          position: fixed;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          z-index: 150;
+          background: linear-gradient(90deg, #1a0050, #4c1d95, #7C3AED);
+          border-top: 1px solid rgba(255,255,255,0.15);
+          box-shadow: 0 -4px 32px rgba(124,58,237,0.5);
+          padding: 0.85rem 1.25rem;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 0.75rem;
+          animation: slideUp 0.4s cubic-bezier(0.16,1,0.3,1);
+        }
+        @keyframes slideUp {
+          from { transform: translateY(100%); opacity: 0; }
+          to   { transform: translateY(0);    opacity: 1; }
+        }
+        .oferta-left {
+          display: flex;
+          flex-direction: column;
+          gap: 0.15rem;
+          min-width: 0;
+        }
+        .oferta-label {
+          font-size: 0.62rem;
+          font-weight: 700;
+          text-transform: uppercase;
+          letter-spacing: 0.1em;
+          color: rgba(255,255,255,0.6);
+        }
+        .oferta-prices {
+          display: flex;
+          align-items: baseline;
+          gap: 0.5rem;
+        }
+        .oferta-de {
+          font-size: 0.82rem;
+          color: rgba(255,255,255,0.45);
+          text-decoration: line-through;
+          font-weight: 500;
+        }
+        .oferta-por {
+          font-family: var(--font-d);
+          font-size: 1.45rem;
+          font-weight: 800;
+          color: #fff;
+          line-height: 1;
+        }
+        .oferta-timer {
+          display: flex;
+          align-items: center;
+          gap: 0.2rem;
+          background: rgba(0,0,0,0.3);
+          border: 1px solid rgba(255,255,255,0.15);
+          border-radius: 10px;
+          padding: 0.45rem 0.75rem;
+          flex-shrink: 0;
+        }
+        .t-block {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          min-width: 28px;
+        }
+        .t-num {
+          font-family: var(--font-d);
+          font-size: 1.15rem;
+          font-weight: 800;
+          color: #fff;
+          line-height: 1;
+        }
+        .t-lbl {
+          font-size: 0.45rem;
+          text-transform: uppercase;
+          letter-spacing: 0.05em;
+          color: rgba(255,255,255,0.5);
+          margin-top: 1px;
+        }
+        .t-sep {
+          font-size: 1rem;
+          font-weight: 700;
+          color: rgba(255,255,255,0.35);
+          margin: 0 1px;
+          padding-bottom: 4px;
+        }
+        .oferta-cta {
+          background: #fff;
+          color: #7C3AED;
+          font-family: var(--font-s);
+          font-size: 0.82rem;
+          font-weight: 800;
+          padding: 0.65rem 1.1rem;
+          border-radius: 10px;
+          text-decoration: none;
+          white-space: nowrap;
+          flex-shrink: 0;
+          transition: opacity 0.15s, transform 0.15s;
+          box-shadow: 0 2px 12px rgba(0,0,0,0.25);
+        }
+        .oferta-cta:hover { opacity: 0.92; transform: translateY(-1px); }
+        @media (max-width: 420px) {
+          .oferta-float { padding: 0.75rem 1rem; }
+          .oferta-timer { display: none; }
+          .oferta-por { font-size: 1.25rem; }
+        }
       `}</style>
-      <div className="oferta-banner">
-        <span className="oferta-text">
-          🔥 Oferta por tempo limitado — <s>R$ 34,99</s> por apenas <strong>R$ 24,99</strong>
-        </span>
-        <div className="oferta-timer">
-          <div className="timer-block">
-            <span className="timer-num">{pad(h)}</span>
-            <span className="timer-lbl">hrs</span>
-          </div>
-          <span className="timer-sep">:</span>
-          <div className="timer-block">
-            <span className="timer-num">{pad(m)}</span>
-            <span className="timer-lbl">min</span>
-          </div>
-          <span className="timer-sep">:</span>
-          <div className="timer-block">
-            <span className="timer-num">{pad(s)}</span>
-            <span className="timer-lbl">seg</span>
+
+      <div className="oferta-float">
+        <div className="oferta-left">
+          <span className="oferta-label">🔥 Oferta termina hoje</span>
+          <div className="oferta-prices">
+            <span className="oferta-de">R$ 34,99</span>
+            <span className="oferta-por">R$ 24,99</span>
           </div>
         </div>
-        <a href="/comprar" className="oferta-btn">Garantir oferta →</a>
+
+        <div className="oferta-timer">
+          <div className="t-block">
+            <span className="t-num">{pad(h)}</span>
+            <span className="t-lbl">h</span>
+          </div>
+          <span className="t-sep">:</span>
+          <div className="t-block">
+            <span className="t-num">{pad(m)}</span>
+            <span className="t-lbl">m</span>
+          </div>
+          <span className="t-sep">:</span>
+          <div className="t-block">
+            <span className="t-num">{pad(s)}</span>
+            <span className="t-lbl">s</span>
+          </div>
+        </div>
+
+        <a href="/comprar" className="oferta-cta">Garantir →</a>
       </div>
     </>
   )
