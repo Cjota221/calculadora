@@ -4,7 +4,7 @@ import { randomUUID } from 'crypto'
 
 export async function POST(req: NextRequest) {
   try {
-    const { nome, email, telefone, senha } = await req.json()
+    const { nome, email, telefone, nicho, senha } = await req.json()
 
     if (!nome || !email || !senha) {
       return NextResponse.json({ error: 'Campos obrigatórios: nome, email, senha.' }, { status: 400 })
@@ -69,6 +69,7 @@ export async function POST(req: NextRequest) {
           nome: nome.trim(),
           email: email.toLowerCase().trim(),
           telefone: telefone?.trim() || null,
+          nicho: nicho?.trim() || null,
           status: 'pendente',
           mp_external_ref: externalRef,
         })
@@ -93,6 +94,7 @@ export async function POST(req: NextRequest) {
         nome: nome.trim(),
         email: email.toLowerCase().trim(),
         telefone: telefone?.trim() || null,
+        nicho: nicho?.trim() || null,
         status: 'pendente',
         mp_external_ref: externalRef,
       })

@@ -33,6 +33,7 @@ export default function ComprarPage() {
   const [nome, setNome] = useState('')
   const [email, setEmail] = useState('')
   const [telefone, setTelefone] = useState('')
+  const [nicho, setNicho] = useState('')
   const [senha, setSenha] = useState('')
   const [senhaConf, setSenhaConf] = useState('')
 
@@ -131,7 +132,7 @@ export default function ComprarPage() {
       const resUser = await fetch('/api/checkout/criar-usuario', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nome, email, telefone, senha }),
+        body: JSON.stringify({ nome, email, telefone, nicho, senha }),
       })
       const dataUser = await resUser.json()
       if (!resUser.ok) { setErro(dataUser.error || 'Erro ao criar conta.'); setLoading(false); return }
@@ -256,6 +257,20 @@ export default function ComprarPage() {
         <div className="buy-field">
           <label>WhatsApp <span className="optional">(opcional)</span></label>
           <input type="tel" placeholder="(62) 9 9999-9999" value={telefone} onChange={e => setTelefone(e.target.value)} autoComplete="tel" />
+        </div>
+        <div className="buy-field">
+          <label>Qual é o seu nicho?</label>
+          <select value={nicho} onChange={e => setNicho(e.target.value)} className="buy-select">
+            <option value="">Selecione seu segmento...</option>
+            <option value="Moda e Roupas">Moda e Roupas</option>
+            <option value="Confeitaria e Doces">Confeitaria e Doces</option>
+            <option value="Alimentação">Alimentação</option>
+            <option value="Artesanato / Handmade">Artesanato / Handmade</option>
+            <option value="Beleza e Cosméticos">Beleza e Cosméticos</option>
+            <option value="Papelaria e Personalizados">Papelaria e Personalizados</option>
+            <option value="Serviços">Serviços</option>
+            <option value="Outro">Outro</option>
+          </select>
         </div>
         <div className="buy-field-row">
           <div className="buy-field">

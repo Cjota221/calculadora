@@ -4,6 +4,7 @@ import { AdminLogin } from '@/components/admin/AdminLogin'
 import { StatsCards } from '@/components/admin/StatsCards'
 import { CreateUserForm } from '@/components/admin/CreateUserForm'
 import { UsersTable } from '@/components/admin/UsersTable'
+import { CompradoresTable } from '@/components/admin/CompradoresTable'
 import { TopbarAdmin } from '@/components/layout/TopbarAdmin'
 import { Toast } from '@/components/ui/Toast'
 import type { PrecifiqueUser } from '@/types'
@@ -26,9 +27,21 @@ async function sbFetch(path: string, method = 'GET', body?: object) {
   try { return await res.json() } catch { return null }
 }
 
+interface Comprador {
+  id: string
+  nome: string
+  email: string
+  telefone: string | null
+  nicho: string | null
+  status: string
+  created_at: string
+  ativado_em: string | null
+}
+
 export default function Admin() {
   const [authed, setAuthed] = useState(false)
   const [users, setUsers] = useState<PrecifiqueUser[]>([])
+  const [compradores, setCompradores] = useState<Comprador[]>([])
   const [toast, setToast] = useState('')
   const [toastVisible, setToastVisible] = useState(false)
 
@@ -43,9 +56,14 @@ export default function Admin() {
     setUsers(data || [])
   }, [])
 
+  const loadCompradores = useCallback(async () => {
+    const data = await sbFetch('usuarios_precifique?select=id,nome,email,telefone,nicho,status,created_at,ativado_em&order=created_at.desc')
+    setCompradores(data || [])
+  }, [])
+
   useEffect(() => {
-    if (authed) loadUsers()
-  }, [authed, loadUsers])
+    if (authed) { loadUsers(); loadCompradores() }
+  }, [authed, loadUsers, loadCompradores])
 
   async function toggleUser(id: string, ativo: boolean) {
     await sbFetch(`precifique_users?id=eq.${id}`, 'PATCH', { ativo })
@@ -133,7 +151,10 @@ export default function Admin() {
           onError={showToast}
         />
 
-        <h2 className="section-title">Clientes com acesso</h2>
+        <h2 className="section-title">Compradores (checkout automático)</h2>
+        <CompradoresTable compradores={compradores} onRefresh={loadCompradores} />
+
+        <h2 className="section-title" style={{ marginTop: '2.5rem' }}>Acessos manuais (legado)</h2>
         <UsersTable users={users} onToggle={toggleUser} onRefresh={loadUsers} />
       </div>
 

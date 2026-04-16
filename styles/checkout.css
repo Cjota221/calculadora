@@ -11,6 +11,9 @@
 .buy-field input{width:100%;padding:0.85rem 1rem;background:var(--bg3);border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:var(--font-s);font-size:1rem;color:var(--text);outline:none;transition:border-color 0.2s,box-shadow 0.2s}
 .buy-field input:focus{border-color:rgba(124,58,237,0.4);box-shadow:0 0 0 3px rgba(124,58,237,0.07);background:#fff}
 .buy-field input::placeholder{color:var(--text3);font-weight:400}
+.buy-select{width:100%;padding:0.85rem 1rem;background:var(--bg3);border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:var(--font-s);font-size:1rem;color:var(--text);outline:none;transition:border-color 0.2s,box-shadow 0.2s;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%239ca3af' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 1rem center;cursor:pointer}
+.buy-select:focus{border-color:rgba(124,58,237,0.4);box-shadow:0 0 0 3px rgba(124,58,237,0.07);background-color:#fff}
+.buy-select option[value=""]{color:var(--text3)}
 .buy-field-row{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem}
 .metodo-wrap{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:1.25rem}
 .metodo-btn{display:flex;align-items:center;justify-content:center;gap:0.5rem;padding:0.85rem;border:1.5px solid var(--border);border-radius:var(--radius-sm);background:#fff;font-family:var(--font-s);font-size:var(--fs-sm);font-weight:600;color:var(--text2);cursor:pointer;transition:all 0.2s}
