@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
+import '@/styles/checkout.css'
 
 const WPP = `https://wa.me/5562982237075?text=${encodeURIComponent('Olá! Já paguei o Precifique e preciso de ajuda com meu acesso.')}`
 const MP_PK = process.env.NEXT_PUBLIC_MP_PUBLIC_KEY!
@@ -337,43 +338,6 @@ export default function ComprarPage() {
 
         <a href={WPP} target="_blank" rel="noreferrer" className="buy-wpp">Prefiro pagar pelo WhatsApp</a>
       </div>
-
-      <style>{`
-        .buy-wrap{min-height:100vh;display:flex;align-items:flex-start;justify-content:center;padding:2rem 1rem 5rem;background:linear-gradient(135deg,#0D0428 0%,#2A0A70 60%,#7C3AED 100%)}
-        .buy-card{width:100%;max-width:480px;background:#fff;border-radius:var(--radius);padding:2rem 1.75rem;box-shadow:0 24px 80px rgba(0,0,0,0.35)}
-        .buy-brand{font-family:var(--font-d);font-size:1.5rem;font-weight:800;color:var(--text);margin-bottom:1.5rem;text-align:center}
-        .buy-title{font-family:var(--font-d);font-size:1.4rem;font-weight:800;color:var(--text);margin-bottom:0.35rem;text-align:center}
-        .buy-sub{font-size:var(--fs-sm);color:var(--text3);text-align:center;margin-bottom:1.75rem;line-height:1.6}
-        .buy-section-label{font-size:var(--fs-xs);font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--text3);margin:1.5rem 0 0.85rem;padding-top:1.25rem;border-top:1px solid var(--border)}
-        .buy-section-label:first-of-type{border-top:none;padding-top:0;margin-top:0}
-        .buy-field{margin-bottom:0.85rem}
-        .buy-field label{display:block;font-size:var(--fs-xs);font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--text3);margin-bottom:0.4rem}
-        .buy-field .optional{font-weight:400;text-transform:none;letter-spacing:0}
-        .buy-field input{width:100%;padding:0.85rem 1rem;background:var(--bg3);border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:var(--font-s);font-size:1rem;color:var(--text);outline:none;transition:border-color 0.2s,box-shadow 0.2s}
-        .buy-field input:focus{border-color:rgba(124,58,237,0.4);box-shadow:0 0 0 3px rgba(124,58,237,0.07);background:#fff}
-        .buy-field input::placeholder{color:var(--text3);font-weight:400}
-        .buy-field-row{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem}
-        .metodo-wrap{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:1.25rem}
-        .metodo-btn{display:flex;align-items:center;justify-content:center;gap:0.5rem;padding:0.85rem;border:1.5px solid var(--border);border-radius:var(--radius-sm);background:#fff;font-family:var(--font-s);font-size:var(--fs-sm);font-weight:600;color:var(--text2);cursor:pointer;transition:all 0.2s}
-        .metodo-btn:hover{border-color:var(--pink);color:var(--pink)}
-        .metodo-btn.active{border-color:var(--pink);background:var(--pink-dim);color:var(--pink)}
-        .cartao-fields{animation:fadeUp 0.2s var(--ease)}
-        .btn-pagar{width:100%;padding:1.1rem;margin-top:1rem;background:var(--pink);color:#fff;border:none;border-radius:var(--radius-sm);font-family:var(--font-s);font-size:1rem;font-weight:800;cursor:pointer;transition:all 0.2s var(--ease);box-shadow:0 4px 18px rgba(124,58,237,0.3);display:flex;align-items:center;justify-content:center;gap:0.5rem}
-        .btn-pagar:hover:not(:disabled){background:var(--pink2);transform:translateY(-1px);box-shadow:0 6px 24px rgba(124,58,237,0.4)}
-        .btn-pagar:disabled{opacity:0.6;cursor:not-allowed}
-        .buy-seguro{display:flex;align-items:center;justify-content:center;gap:0.4rem;font-size:var(--fs-xs);color:var(--text3);margin-top:0.85rem}
-        .buy-error{background:var(--red-dim);border:1px solid rgba(217,53,53,0.2);border-radius:10px;padding:0.75rem 1rem;font-size:var(--fs-sm);color:var(--red);margin-top:0.75rem;font-weight:500}
-        .buy-wpp{display:block;text-align:center;font-size:var(--fs-xs);color:var(--text3);margin-top:1rem;text-decoration:underline;text-underline-offset:3px;transition:color 0.2s}
-        .buy-wpp:hover{color:var(--pink)}
-        .buy-note{font-size:var(--fs-xs);color:var(--text3);text-align:center;margin-top:0.5rem;line-height:1.5}
-        .pix-code-wrap{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:1rem;margin:1rem 0}
-        .pix-code{font-size:var(--fs-xs);color:var(--text3);word-break:break-all;margin-bottom:0.75rem;line-height:1.5}
-        .btn-copy{width:100%;padding:0.75rem;background:var(--pink);color:#fff;border:none;border-radius:var(--radius-xs);font-family:var(--font-s);font-size:var(--fs-sm);font-weight:700;cursor:pointer;transition:background 0.2s}
-        .btn-copy:hover{background:var(--pink2)}
-        .pix-status{display:flex;align-items:center;gap:0.5rem;font-size:var(--fs-sm);font-weight:600;color:var(--text2);margin:1rem 0}
-        .pix-dot{width:10px;height:10px;background:#25D366;border-radius:50%;animation:pulse 1.5s ease infinite;flex-shrink:0}
-        .spinner{width:18px;height:18px;border:2px solid rgba(255,255,255,0.4);border-top-color:#fff;border-radius:50%;animation:spin 0.7s linear infinite}
-      `}</style>
     </div>
   )
 }
