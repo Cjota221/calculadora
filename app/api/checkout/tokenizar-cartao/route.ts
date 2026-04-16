@@ -20,20 +20,31 @@ export async function POST(req: NextRequest) {
     const bin = numLimpo.slice(0, 6)
     console.log('[tokenizar] bin:', bin, 'exp:', expirationMonth, '/', expirationYear)
 
-    // Buscar payment_method_id e issuer pelo BIN
+    // Buscar payment_method_id e issuer pelo BIN (usa public_key como query param)
     const binRes = await fetch(
-      `https://api.mercadopago.com/v1/payment_methods/search?bin=${bin}`,
+      `https://api.mercadopago.com/v1/payment_methods/search?bin=${bin}&public_key=${process.env.NEXT_PUBLIC_MP_PUBLIC_KEY}`,
       { headers: { Authorization: `Bearer ${process.env.MP_ACCESS_TOKEN}` } }
     )
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const binData: any = await binRes.json()
+    console.log('[tokenizar] binData status:', binRes.status, 'results:', binData?.results?.length ?? 0)
     const method = binData?.results?.[0]
-    const paymentMethodId: string = method?.id ?? ''
-    const issuerId: string = String(method?.issuer?.id ?? '')
+    let paymentMethodId: string = method?.id ?? ''
+    let issuerId: string = String(method?.issuer?.id ?? '')
+
+    // Fallback: detectar bandeira pelo prefixo do BIN
+    if (!paymentMethodId) {
+      const first = bin[0]
+      if (first === '4') paymentMethodId = 'visa'
+      else if (first === '5') paymentMethodId = 'master'
+      else if (first === '3') paymentMethodId = 'amex'
+      else if (first === '6') paymentMethodId = 'elo'
+      console.log('[tokenizar] fallback bandeira pelo prefixo:', paymentMethodId)
+    }
     console.log('[tokenizar] paymentMethodId:', paymentMethodId, 'issuerId:', issuerId)
 
     if (!paymentMethodId) {
-      return NextResponse.json({ error: 'Bandeira do cartão não identificada. Verifique o número.' }, { status: 422 })
+      return NextResponse.json({ error: 'Bandeira do cartão não identificada. Verifique o número do cartão.' }, { status: 422 })
     }
 
     // Criar token — incluindo cardholder (obrigatório para validação no Brasil)
