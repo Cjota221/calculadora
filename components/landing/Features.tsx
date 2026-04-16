@@ -15,7 +15,7 @@ const features = [
     desc: 'Adicione taxas do app, cartão e marketplace. Veja o impacto real no seu lucro antes de vender.',
   },
   {
-    icon: <><line x1="12" y1="3" x2="12" y2="21"/><path d="M3 9l9-7 9 7"/><path d="M5 12H1l2 5h4l2-5H5z"/><path d="M19 12h-4l2 5h4l2-5h-4z"/></>,
+    icon: <><line x1="12" y1="3" x2="12" y2="21"/><path d="M3 9l9-7 9 7"/><path d="M9 22V12h6v10"/></>,
     title: 'Ponto de equilíbrio',
     desc: 'Descubra quantas peças precisa vender por mês para cobrir todos os seus custos fixos.',
   },
@@ -25,9 +25,9 @@ const features = [
     desc: 'Saiba se a margem está fraca, razoável ou ótima antes de publicar o preço.',
   },
   {
-    icon: <><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></>,
-    title: 'Compartilha pelo WhatsApp',
-    desc: 'Manda o resultado calculado direto para a cliente com um toque.',
+    icon: <><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></>,
+    title: 'Salvar cálculos',
+    desc: 'Guarde os cálculos dos seus produtos com nome e data de venda para consultar depois.',
   },
 ]
 

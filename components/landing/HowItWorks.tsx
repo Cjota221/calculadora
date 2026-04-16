@@ -1,21 +1,25 @@
 const steps = [
   {
     num: 1,
-    title: 'Faça o pagamento',
-    desc: 'Clique no botão e pague R$ 24,99 pelo Mercado Pago. Rápido e seguro.',
+    emoji: '📝',
+    title: 'Preencha seus dados',
+    desc: 'Nome, email e crie sua senha. Leva menos de 1 minuto.',
   },
   {
     num: 2,
-    title: 'Me chame no WhatsApp',
-    desc: 'Clique no botão verde e envie o comprovante. Respondo em poucos minutos.',
+    emoji: '💳',
+    title: 'Pague com segurança',
+    desc: 'Pix ou cartão de crédito via Mercado Pago. Rápido e 100% seguro.',
   },
   {
     num: 3,
-    title: 'Receba seu login e senha',
-    desc: 'Crio seu acesso na hora e você já pode usar a calculadora imediatamente.',
+    emoji: '✅',
+    title: 'Acesso liberado na hora',
+    desc: 'Confirmado o pagamento, seu acesso é ativado automaticamente. Sem espera.',
   },
   {
     num: 4,
+    emoji: '🚀',
     title: 'Use para sempre',
     desc: 'Acesso vitalício. Paga uma vez e nunca mais paga nada.',
   },
@@ -32,10 +36,9 @@ export function HowItWorks() {
             <div key={s.num} className="step">
               <div className="step-left">
                 <div className="step-num">{s.num}</div>
-                <div className="step-line" />
               </div>
               <div className="step-content">
-                <h4>{s.title}</h4>
+                <h4>{s.emoji} {s.title}</h4>
                 <p>{s.desc}</p>
               </div>
             </div>
