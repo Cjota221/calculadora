@@ -47,14 +47,22 @@ export default function ComprarPage() {
   const [userId, setUserId] = useState('')
   const [copiado, setCopiado] = useState(false)
   const pollingRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const [mpPronto, setMpPronto] = useState(false)
 
   useEffect(() => {
-    // Carregar SDK do MP
+    // Se já carregou (ex: hot reload), marca como pronto
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    if ((window as any).MercadoPago) { setMpPronto(true); return }
+
     const script = document.createElement('script')
     script.src = 'https://sdk.mercadopago.com/v2/mercadopago.js'
     script.async = true
+    script.onload = () => setMpPronto(true)
+    script.onerror = () => console.error('Falha ao carregar SDK do MP')
     document.head.appendChild(script)
-    return () => { document.head.removeChild(script) }
+    return () => {
+      try { document.head.removeChild(script) } catch { /* já removido */ }
+    }
   }, [])
 
   useEffect(() => {
@@ -79,7 +87,7 @@ export default function ComprarPage() {
   async function tokenizarCartao(): Promise<{ token: string; issuer: string; paymentMethodId: string } | null> {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const mp = (window as any).MercadoPago
-    if (!mp) { setErro('SDK do MP não carregou. Recarregue a página.'); return null }
+    if (!mp || !mpPronto) { setErro('Aguarde o carregamento da página e tente novamente.'); return null }
     const mpInstance = new mp(MP_PK, { locale: 'pt-BR' })
     const [mes, ano] = card.validade.split('/')
     const bin = card.numero.replace(/\s/g, '').slice(0, 6)
@@ -347,9 +355,11 @@ export default function ComprarPage() {
 
         {erro && <div className="buy-error">{erro}</div>}
 
-        <button className="btn-pagar" onClick={pagar} disabled={loading}>
+        <button className="btn-pagar" onClick={pagar} disabled={loading || (metodo === 'cartao' && !mpPronto)}>
           {loading
             ? <span className="spinner" />
+            : metodo === 'cartao' && !mpPronto
+            ? 'Carregando...'
             : metodo === 'pix' ? 'Gerar Pix — R$ 24,99' : 'Pagar R$ 24,99 no cartão'}
         </button>
 
