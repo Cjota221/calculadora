@@ -42,7 +42,39 @@ export async function POST(req: NextRequest) {
 
     if (authError) {
       console.error('Auth createUser error:', authError.message)
-      if (authError.message.includes('already registered')) {
+      const jaExiste = authError.message.toLowerCase().includes('already') || authError.message.toLowerCase().includes('registered')
+      if (jaExiste) {
+        // Auth já tem esse email — buscar se tem registro pendente no banco
+        const { data: pendente } = await supabaseAdmin
+          .from('usuarios_precifique')
+          .select('id, status')
+          .eq('email', email.toLowerCase().trim())
+          .maybeSingle()
+
+        if (pendente?.status === 'ativo') {
+          return NextResponse.json({ error: 'Esse email já tem acesso. Faça login.' }, { status: 409 })
+        }
+        if (pendente?.status === 'pendente') {
+          // Deixa tentar pagar de novo
+          return NextResponse.json({ userId: pendente.id, externalRef: `precifique_${pendente.id}` })
+        }
+        // Tem auth mas não tem registro no banco — buscar auth user e recriar registro
+        const { data: authList } = await supabaseAdmin.auth.admin.listUsers()
+        const authUser = authList?.users?.find(u => u.email?.toLowerCase() === email.toLowerCase().trim())
+        if (authUser) {
+          const userId = randomUUID()
+          const externalRef = `precifique_${userId}`
+          await supabaseAdmin.from('usuarios_precifique').insert({
+            id: userId,
+            auth_user_id: authUser.id,
+            nome: nome.trim(),
+            email: email.toLowerCase().trim(),
+            telefone: telefone?.trim() || null,
+            status: 'pendente',
+            mp_external_ref: externalRef,
+          })
+          return NextResponse.json({ userId, externalRef })
+        }
         return NextResponse.json({ error: 'Esse email já tem acesso. Faça login.' }, { status: 409 })
       }
       return NextResponse.json({ error: `Erro ao criar conta: ${authError.message}` }, { status: 500 })
