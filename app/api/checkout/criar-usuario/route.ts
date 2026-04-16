@@ -37,7 +37,7 @@ export async function POST(req: NextRequest) {
     const { data: authUser, error: authError } = await supabaseAdmin.auth.admin.createUser({
       email: email.toLowerCase().trim(),
       password: senha,
-      email_confirm: false,
+      email_confirm: true,
     })
 
     if (authError) {
@@ -45,7 +45,18 @@ export async function POST(req: NextRequest) {
       const jaExiste = authError.message.toLowerCase().includes('already') || authError.message.toLowerCase().includes('registered')
 
       if (jaExiste) {
-        // Email já existe no Auth — verificar se tem registro no banco
+        // Email já existe no Auth — buscar o auth_user_id real
+        const { data: authList } = await supabaseAdmin.auth.admin.listUsers()
+        const authUserExistente = authList?.users?.find(u => u.email === email.toLowerCase().trim())
+
+        // Atualizar a senha para a nova que a pessoa digitou
+        if (authUserExistente) {
+          await supabaseAdmin.auth.admin.updateUserById(authUserExistente.id, {
+            password: senha,
+            email_confirm: true,
+          })
+        }
+
         const { data: noDb } = await supabaseAdmin
           .from('usuarios_precifique')
           .select('id, status')
@@ -56,16 +67,22 @@ export async function POST(req: NextRequest) {
           return NextResponse.json({ error: 'Esse email já tem acesso. Faça login.' }, { status: 409 })
         }
         if (noDb?.status === 'pendente') {
+          // Aproveita para linkar o auth_user_id se ainda estava null
+          if (authUserExistente && !noDb) {
+            await supabaseAdmin.from('usuarios_precifique')
+              .update({ auth_user_id: authUserExistente.id })
+              .eq('email', email.toLowerCase().trim())
+              .is('auth_user_id', null)
+          }
           return NextResponse.json({ userId: noDb.id, externalRef: `precifique_${noDb.id}` })
         }
 
-        // Não tem no banco — cria registro com auth_user_id nulo por enquanto
-        // O webhook vai vincular depois do pagamento
+        // Não tem no banco — cria com auth_user_id correto
         const userId = randomUUID()
         const externalRef = `precifique_${userId}`
         const { error: insertErr } = await supabaseAdmin.from('usuarios_precifique').insert({
           id: userId,
-          auth_user_id: null,
+          auth_user_id: authUserExistente?.id ?? null,
           nome: nome.trim(),
           email: email.toLowerCase().trim(),
           telefone: telefone?.trim() || null,

@@ -49,12 +49,22 @@ function LoginForm() {
         })
 
         if (!authError && authData.user) {
-          // Buscar dados na tabela usuarios_precifique
-          const { data: userData } = await supabase
+          // Buscar por auth_user_id primeiro
+          let { data: userData } = await supabase
             .from('usuarios_precifique')
             .select('id, nome, email, status')
             .eq('auth_user_id', authData.user.id)
-            .single()
+            .maybeSingle()
+
+          // Fallback: buscar por email (caso auth_user_id seja null)
+          if (!userData) {
+            const { data: byEmail } = await supabase
+              .from('usuarios_precifique')
+              .select('id, nome, email, status')
+              .eq('email', login.trim().toLowerCase())
+              .maybeSingle()
+            userData = byEmail
+          }
 
           if (userData?.status === 'ativo') {
             localStorage.setItem('precifique_user', JSON.stringify({
@@ -69,7 +79,17 @@ function LoginForm() {
             setError('Seu pagamento ainda não foi confirmado. Aguarde alguns minutos ou fale no WhatsApp.')
             setLoading(false)
             return
+          } else if (!userData) {
+            setError('Conta não encontrada. Verifique o email ou faça o cadastro.')
+            setLoading(false)
+            return
           }
+        }
+
+        if (authError) {
+          setError('Email ou senha incorretos.')
+          setLoading(false)
+          return
         }
       }
 
