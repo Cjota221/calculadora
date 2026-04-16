@@ -9,6 +9,7 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@mercadopago/sdk-js": "^0.0.3",
     "@netlify/plugin-nextjs": "^5.15.9",
     "@supabase/supabase-js": "^2.103.2",
     "mercadopago": "^2.12.0",

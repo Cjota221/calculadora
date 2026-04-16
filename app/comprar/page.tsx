@@ -2,7 +2,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
-import Script from 'next/script'
+import { loadMercadoPago } from '@mercadopago/sdk-js'
 import '@/styles/checkout.css'
 
 const WPP = `https://wa.me/5562982237075?text=${encodeURIComponent('Olá! Já paguei o Precifique e preciso de ajuda com meu acesso.')}`
@@ -50,7 +50,9 @@ export default function ComprarPage() {
   const pollingRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const [mpPronto, setMpPronto] = useState(false)
 
-  // mpPronto é setado pelo onLoad do <Script> abaixo
+  useEffect(() => {
+    loadMercadoPago().then(() => setMpPronto(true)).catch(() => {})
+  }, [])
 
   useEffect(() => {
     return () => { if (pollingRef.current) clearInterval(pollingRef.current) }
@@ -191,15 +193,6 @@ export default function ComprarPage() {
     })
   }
 
-  // Script do MP — carregado uma única vez pelo Next.js (deduplica por src)
-  const mpScript = (
-    <Script
-      src="https://sdk.mercadopago.com/v2/mercadopago.js"
-      strategy="afterInteractive"
-      onLoad={() => setMpPronto(true)}
-    />
-  )
-
   // ── Tela de sucesso
   if (etapa === 'sucesso') {
     return (
@@ -251,8 +244,6 @@ export default function ComprarPage() {
 
   // ── Formulário principal
   return (
-    <>
-    {mpScript}
     <div className="buy-wrap">
       <div className="buy-card">
         <div className="buy-brand"><span>Precifique</span><span style={{ color: 'var(--pink)' }}>.</span></div>
@@ -369,6 +360,5 @@ export default function ComprarPage() {
         <a href={WPP} target="_blank" rel="noreferrer" className="buy-wpp">Prefiro pagar pelo WhatsApp</a>
       </div>
     </div>
-    </>
   )
 }
