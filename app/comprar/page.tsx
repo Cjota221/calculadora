@@ -21,6 +21,16 @@ interface CardData {
 function formatCartao(v: string) { return v.replace(/\D/g, '').slice(0, 16).replace(/(.{4})/g, '$1 ').trim() }
 function formatValidade(v: string) { return v.replace(/\D/g, '').slice(0, 4).replace(/^(\d{2})(\d)/, '$1/$2') }
 function formatCpf(v: string) { return v.replace(/\D/g, '').slice(0, 11).replace(/(\d{3})(\d{3})(\d{3})(\d{1,2})/, '$1.$2.$3-$4') }
+function luhn(num: string) {
+  const d = num.replace(/\D/g, '')
+  let s = 0; let odd = false
+  for (let i = d.length - 1; i >= 0; i--) {
+    let n = parseInt(d[i])
+    if (odd) { n *= 2; if (n > 9) n -= 9 }
+    s += n; odd = !odd
+  }
+  return s % 10 === 0
+}
 
 export default function ComprarPage() {
   const router = useRouter()
@@ -58,7 +68,9 @@ export default function ComprarPage() {
     if (senha.length < 8) return 'Senha deve ter pelo menos 8 caracteres.'
     if (senha !== senhaConf) return 'As senhas não coincidem.'
     if (metodo === 'cartao') {
-      if (card.numero.replace(/\s/g, '').length < 15) return 'Número do cartão inválido.'
+      const numLimpoVal = card.numero.replace(/\s/g, '')
+      if (numLimpoVal.length < 15) return 'Número do cartão inválido.'
+      if (!luhn(numLimpoVal)) return 'Número do cartão inválido. Verifique os dígitos.'
       if (!card.nome.trim()) return 'Informe o nome impresso no cartão.'
       if (card.validade.length < 5) return 'Validade inválida.'
       if (card.cvv.length < 3) return 'CVV inválido.'

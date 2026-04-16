@@ -92,6 +92,11 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ tipo: 'cartao', status: payment.status, paymentId: payment.id })
   } catch (err) {
     console.error('processar-pagamento error:', err)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const cause = (err as any)?.cause as Array<{ code: number }> | undefined
+    if (cause?.some(c => c.code === 3034)) {
+      return NextResponse.json({ error: 'Número do cartão inválido. Verifique os dados e tente novamente.' }, { status: 422 })
+    }
     return NextResponse.json({ error: 'Erro ao processar pagamento. Tente novamente.' }, { status: 500 })
   }
 }
