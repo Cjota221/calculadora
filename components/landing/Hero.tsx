@@ -1,4 +1,3 @@
-const MP_LINK = process.env.NEXT_PUBLIC_MP_LINK || '#'
 const WPP_MSG = encodeURIComponent('Olá Carolina, acabei de pagar o Precifique e quero meu acesso!')
 
 export function Hero() {
@@ -32,7 +31,7 @@ export function Hero() {
         </div>
 
         <div className="hero-cta-wrap">
-          <a href={MP_LINK} className="btn-buy">
+          <a href="/comprar" className="btn-buy">
             <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z" />
               <line x1="7" y1="7" x2="7.01" y2="7" />
