@@ -139,10 +139,20 @@ export function OfertaBanner() {
           box-shadow: 0 2px 12px rgba(0,0,0,0.25);
         }
         .oferta-cta:hover { opacity: 0.92; transform: translateY(-1px); }
-        @media (max-width: 420px) {
-          .oferta-float { padding: 0.75rem 1rem; }
+        @media (max-width: 500px) {
+          .oferta-float {
+            padding: 0.7rem 1rem;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+          }
+          .oferta-left { flex: 1; }
+          .oferta-timer { padding: 0.35rem 0.55rem; }
+          .t-num { font-size: 1rem; }
+          .oferta-cta { font-size: 0.78rem; padding: 0.55rem 0.9rem; }
+        }
+        @media (max-width: 360px) {
           .oferta-timer { display: none; }
-          .oferta-por { font-size: 1.25rem; }
+          .oferta-float { justify-content: space-between; }
         }
       `}</style>
 
