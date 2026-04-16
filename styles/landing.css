@@ -80,20 +80,19 @@
 
 /* ── How it works ───────────────────────────────────── */
 .lp-how { padding: 4rem 1.5rem; }
-.how-inner { max-width: 560px; margin: 0 auto; }
-.steps { display: grid; grid-template-columns: 1fr; gap: 1rem; margin-top: 2.5rem; }
-@media (min-width: 480px) { .steps { grid-template-columns: 1fr 1fr; } }
-@media (min-width: 800px) { .steps { grid-template-columns: repeat(4, 1fr); } }
-.step { display: flex; flex-direction: column; gap: 1rem; background: #fff; border: 1.5px solid var(--border); border-radius: var(--radius); padding: 1.5rem; box-shadow: 0 4px 16px rgba(124,58,237,0.06); transition: transform 0.2s, box-shadow 0.2s; }
+.how-inner { max-width: 960px; margin: 0 auto; }
+.steps { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 2.5rem; position: relative; }
+@media (min-width: 800px) { .steps { grid-template-columns: repeat(4, 1fr); gap: 1.25rem; } }
+.step { display: flex; flex-direction: column; gap: 0.85rem; background: #fff; border: 1.5px solid var(--border); border-radius: var(--radius); padding: 1.25rem 1.15rem 1.35rem; box-shadow: 0 4px 16px rgba(124,58,237,0.06); transition: transform 0.2s, box-shadow 0.2s; position: relative; }
 .step:hover { transform: translateY(-3px); box-shadow: 0 8px 28px rgba(124,58,237,0.12); }
-.step-left { display: flex; align-items: center; flex-shrink: 0; }
-.step-num { width: 40px; height: 40px; border-radius: 50%; background: var(--pink-dim); border: 1.5px solid rgba(124,58,237,0.18); color: var(--pink); font-family: var(--font-d); font-size: 0.85rem; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-.step-line { display: none; }
-.step-content { padding-top: 0; }
-.step-icon { width: 36px; height: 36px; background: var(--pink-dim); border: 1px solid rgba(124,58,237,0.15); border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 0.75rem; color: var(--pink); }
+.step-top { display: flex; align-items: center; gap: 0.65rem; }
+.step-num { font-family: var(--font-d); font-size: 0.7rem; font-weight: 800; color: var(--pink); background: var(--pink-dim); border: 1.5px solid rgba(124,58,237,0.18); border-radius: 99px; padding: 0.2rem 0.55rem; letter-spacing: 0.04em; flex-shrink: 0; }
+.step-icon { width: 34px; height: 34px; background: var(--pink-dim); border: 1px solid rgba(124,58,237,0.15); border-radius: 9px; display: flex; align-items: center; justify-content: center; color: var(--pink); flex-shrink: 0; }
 .step-icon svg { stroke: var(--pink); }
-.step-content h4 { font-size: var(--fs-base); font-weight: 700; color: var(--text); margin-bottom: 0.4rem; }
-.step-content p { font-size: var(--fs-sm); color: var(--text2); line-height: 1.65; }
+.step-body h4 { font-size: var(--fs-sm); font-weight: 700; color: var(--text); margin-bottom: 0.3rem; line-height: 1.3; }
+.step-body p { font-size: 0.78rem; color: var(--text2); line-height: 1.6; }
+.step-arrow { display: none; position: absolute; right: -0.85rem; top: 50%; transform: translateY(-50%); z-index: 2; font-size: 1rem; color: rgba(124,58,237,0.3); pointer-events: none; }
+@media (min-width: 800px) { .step-arrow { display: block; } }
 
 /* ── CTA Bottom ─────────────────────────────────────── */
 .lp-cta { background: linear-gradient(135deg, #0D0428 0%, #2A0A70 50%, #7C3AED 100%); padding: 5rem 1.5rem; text-align: center; position: relative; overflow: hidden; }
