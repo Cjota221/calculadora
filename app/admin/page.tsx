@@ -42,6 +42,7 @@ export default function Admin() {
   const [authed, setAuthed] = useState(false)
   const [users, setUsers] = useState<PrecifiqueUser[]>([])
   const [compradores, setCompradores] = useState<Comprador[]>([])
+  const [stats, setStats] = useState({ total: 0, ativos: 0, pendentes: 0, faturamento: 0, novosHoje: 0, novosSemana: 0, novosMes: 0, faturamentoMes: 0 })
   const [toast, setToast] = useState('')
   const [toastVisible, setToastVisible] = useState(false)
 
@@ -62,17 +63,21 @@ export default function Admin() {
     setCompradores(Array.isArray(data) ? data : [])
   }, [])
 
+  const loadStats = useCallback(async () => {
+    const res = await fetch('/api/admin/stats')
+    const data = await res.json()
+    if (!data.error) setStats(data)
+  }, [])
+
   useEffect(() => {
-    if (authed) { loadUsers(); loadCompradores() }
-  }, [authed, loadUsers, loadCompradores])
+    if (authed) { loadUsers(); loadCompradores(); loadStats() }
+  }, [authed, loadUsers, loadCompradores, loadStats])
 
   async function toggleUser(id: string, ativo: boolean) {
     await sbFetch(`precifique_users?id=eq.${id}`, 'PATCH', { ativo })
     showToast(ativo ? 'Acesso ativado!' : 'Acesso bloqueado!')
     loadUsers()
   }
-
-  const ativos = users.filter(u => u.ativo).length
 
   if (!authed) {
     return (
@@ -100,10 +105,16 @@ export default function Admin() {
         .btn-logout{font-size:0.78rem;font-weight:600;color:var(--text3);background:transparent;border:1.5px solid var(--border);border-radius:8px;padding:0.4rem 0.85rem;cursor:pointer;transition:all 0.2s;font-family:var(--font-s)}
         .btn-logout:hover{border-color:var(--border2);color:var(--text)}
         .main{max-width:860px;margin:0 auto;padding:2rem 1.5rem}
-        .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:2rem}
-        .stat-card{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:1.25rem 1.5rem}
-        .stat-val{font-family:var(--font-d);font-size:2rem;color:var(--text);line-height:1}
-        .stat-lbl{font-size:0.72rem;color:var(--text3);margin-top:0.3rem;font-weight:500}
+        .stat-card{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:1.25rem 1.5rem;position:relative}
+        .stat-highlight{border-color:rgba(124,58,237,0.2);background:linear-gradient(135deg,var(--bg2),var(--bg3))}
+        .stat-icon{font-size:1.2rem;margin-bottom:0.4rem}
+        .stat-val{font-family:var(--font-d);font-size:1.9rem;color:var(--text);line-height:1}
+        .stat-green{color:var(--green)}
+        .stat-purple{color:var(--pink)}
+        .stat-yellow{color:#D97706}
+        .stat-lbl{font-size:0.72rem;color:var(--text3);margin-top:0.3rem;font-weight:600;text-transform:uppercase;letter-spacing:0.05em}
+        .stat-sub{font-size:0.72rem;color:var(--text3);margin-top:0.25rem}
+        @media(max-width:600px){.stats{grid-template-columns:1fr 1fr}}
         .section-title{font-family:var(--font-d);font-size:1.4rem;margin-bottom:1.25rem}
         .create-card{background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:1.75rem;margin-bottom:2rem}
         .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:1rem}
@@ -144,7 +155,7 @@ export default function Admin() {
       <TopbarAdmin onLogout={() => setAuthed(false)} />
 
       <div className="main">
-        <StatsCards total={users.length} ativos={ativos} bloqueados={users.length - ativos} />
+        <StatsCards stats={stats} />
 
         <h2 className="section-title">Criar novo acesso</h2>
         <CreateUserForm
