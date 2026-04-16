@@ -58,17 +58,13 @@ export default function ComprarPage() {
       document.head.appendChild(script)
     }
 
-    // Polling até o SDK aparecer no window (máx 15s)
+    // Polling até o SDK aparecer no window (máx 5s, depois libera de qualquer forma)
     let tentativas = 0
     const check = setInterval(() => {
       tentativas++
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      if ((window as any).MercadoPago) {
+      if ((window as any).MercadoPago || tentativas > 10) {
         clearInterval(check)
-        setMpPronto(true)
-      } else if (tentativas > 30) {
-        clearInterval(check)
-        // SDK demorou — permite tentar mesmo assim
         setMpPronto(true)
       }
     }, 500)
