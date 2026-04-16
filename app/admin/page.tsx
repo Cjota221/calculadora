@@ -57,8 +57,9 @@ export default function Admin() {
   }, [])
 
   const loadCompradores = useCallback(async () => {
-    const data = await sbFetch('usuarios_precifique?select=id,nome,email,telefone,nicho,status,created_at,ativado_em&order=created_at.desc')
-    setCompradores(data || [])
+    const res = await fetch('/api/admin/compradores')
+    const data = await res.json()
+    setCompradores(Array.isArray(data) ? data : [])
   }, [])
 
   useEffect(() => {

@@ -4,14 +4,20 @@ interface AdminLoginProps {
   onSuccess: () => void
 }
 
-const ADMIN_PASSWORD = 'carol2025'
-
 export function AdminLogin({ onSuccess }: AdminLoginProps) {
   const [pwd, setPwd] = useState('')
   const [error, setError] = useState(false)
+  const [loading, setLoading] = useState(false)
 
-  function handleLogin() {
-    if (pwd === ADMIN_PASSWORD) {
+  async function handleLogin() {
+    setLoading(true)
+    const res = await fetch('/api/admin/auth', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ senha: pwd }),
+    })
+    setLoading(false)
+    if (res.ok) {
       onSuccess()
     } else {
       setError(true)
@@ -31,15 +37,16 @@ export function AdminLogin({ onSuccess }: AdminLoginProps) {
             placeholder="Senha admin"
             value={pwd}
             onChange={e => setPwd(e.target.value)}
-            onKeyDown={e => e.key === 'Enter' && handleLogin()}
+            onKeyDown={e => e.key === 'Enter' && !loading && handleLogin()}
             style={{ width: '100%', padding: '0.82rem 1rem', background: 'var(--bg3)', border: '1.5px solid var(--border)', borderRadius: '11px', fontFamily: 'var(--font-s)', fontSize: '0.93rem', color: 'var(--text)', outline: 'none' }}
           />
         </div>
         <button
           onClick={handleLogin}
-          style={{ width: '100%', padding: '0.9rem 1.5rem', background: 'var(--pink)', color: '#fff', border: 'none', borderRadius: '11px', fontFamily: 'var(--font-s)', fontSize: '0.9rem', fontWeight: 600, cursor: 'pointer' }}
+          disabled={loading}
+          style={{ width: '100%', padding: '0.9rem 1.5rem', background: 'var(--pink)', color: '#fff', border: 'none', borderRadius: '11px', fontFamily: 'var(--font-s)', fontSize: '0.9rem', fontWeight: 600, cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 0.7 : 1 }}
         >
-          Entrar no painel
+          {loading ? 'Verificando...' : 'Entrar no painel'}
         </button>
         {error && (
           <div style={{ background: 'var(--red-dim)', border: '1px solid rgba(217,53,53,0.2)', borderRadius: '9px', padding: '0.65rem 1rem', fontSize: '0.8rem', color: 'var(--red)', marginTop: '0.5rem', fontWeight: 500 }}>

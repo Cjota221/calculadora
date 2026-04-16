@@ -4,7 +4,7 @@ import { supabaseAdmin } from '@/lib/supabase-admin'
 
 export async function POST(req: NextRequest) {
   try {
-    const { userId, externalRef, email, metodo, cardToken, cpf, issuer } = await req.json()
+    const { userId, externalRef, email, metodo, cardToken, cpf, issuer, paymentMethodId } = await req.json()
 
     if (!userId || !externalRef || !email || !metodo) {
       return NextResponse.json({ error: 'Dados incompletos.' }, { status: 400 })
@@ -21,10 +21,11 @@ export async function POST(req: NextRequest) {
     if (metodo === 'pix') {
       baseBody.payment_method_id = 'pix'
     } else {
-      if (!cardToken || !cpf) {
-        return NextResponse.json({ error: 'Token do cartão e CPF são obrigatórios.' }, { status: 400 })
+      if (!cardToken || !cpf || !paymentMethodId) {
+        return NextResponse.json({ error: 'Token do cartão, bandeira e CPF são obrigatórios.' }, { status: 400 })
       }
       baseBody.token = cardToken
+      baseBody.payment_method_id = paymentMethodId
       baseBody.installments = 1
       baseBody.issuer_id = issuer || undefined
       baseBody.payer = {

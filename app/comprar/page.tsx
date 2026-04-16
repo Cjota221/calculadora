@@ -76,13 +76,20 @@ export default function ComprarPage() {
     return ''
   }
 
-  async function tokenizarCartao(): Promise<{ token: string; issuer: string } | null> {
+  async function tokenizarCartao(): Promise<{ token: string; issuer: string; paymentMethodId: string } | null> {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const mp = (window as any).MercadoPago
     if (!mp) { setErro('SDK do MP não carregou. Recarregue a página.'); return null }
     const mpInstance = new mp(MP_PK, { locale: 'pt-BR' })
     const [mes, ano] = card.validade.split('/')
+    const bin = card.numero.replace(/\s/g, '').slice(0, 6)
     try {
+      // Buscar payment_method_id pelo BIN
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const methods = await mpInstance.getPaymentMethods({ bin }) as any
+      const paymentMethodId: string = methods?.results?.[0]?.id ?? ''
+      if (!paymentMethodId) { setErro('Bandeira do cartão não identificada. Verifique o número.'); return null }
+
       const result = await mpInstance.createCardToken({
         cardNumber: card.numero.replace(/\s/g, ''),
         cardholderName: card.nome,
@@ -93,7 +100,7 @@ export default function ComprarPage() {
         identificationNumber: card.cpf.replace(/\D/g, ''),
       })
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      return { token: (result as any).id, issuer: (result as any).issuer?.id }
+      return { token: (result as any).id, issuer: (result as any).issuer?.id, paymentMethodId }
     } catch {
       setErro('Erro ao processar cartão. Verifique os dados.')
       return null
@@ -143,18 +150,20 @@ export default function ComprarPage() {
       // 2. Tokenizar cartão se necessário
       let cardToken: string | undefined
       let issuer: string | undefined
+      let paymentMethodId: string | undefined
       if (metodo === 'cartao') {
         const tokenData = await tokenizarCartao()
         if (!tokenData) { setLoading(false); return }
         cardToken = tokenData.token
         issuer = tokenData.issuer
+        paymentMethodId = tokenData.paymentMethodId
       }
 
       // 3. Processar pagamento
       const resPag = await fetch('/api/checkout/processar-pagamento', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId: uid, externalRef, email, metodo, cardToken, cpf: card.cpf, issuer }),
+        body: JSON.stringify({ userId: uid, externalRef, email, metodo, cardToken, cpf: card.cpf, issuer, paymentMethodId }),
       })
       const dataPag = await resPag.json()
 
