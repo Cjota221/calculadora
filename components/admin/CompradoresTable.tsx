@@ -22,7 +22,7 @@ const NICHOS = ['Todos', 'Moda e Roupas', 'Confeitaria e Doces', 'Alimentação'
 function wppRecuperacao(nome: string, telefone: string) {
   const num = '55' + telefone.replace(/\D/g, '')
   const msg = encodeURIComponent(
-    `Olá ${nome.split(' ')[0]}! 👋 Vi que você iniciou o cadastro no Precifique mas o pagamento não foi confirmado ainda. Posso te ajudar a concluir? 😊`
+    `Ola ${nome.split(' ')[0]}! Vi que voce iniciou o cadastro no Precifique mas o pagamento nao foi confirmado ainda. Posso te ajudar a concluir?`
   )
   return `https://wa.me/${num}?text=${msg}`
 }

@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
+import Script from 'next/script'
 import '@/styles/checkout.css'
 
 const WPP = `https://wa.me/5562982237075?text=${encodeURIComponent('Olá! Já paguei o Precifique e preciso de ajuda com meu acesso.')}`
@@ -49,28 +50,7 @@ export default function ComprarPage() {
   const pollingRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const [mpPronto, setMpPronto] = useState(false)
 
-  useEffect(() => {
-    // Adiciona o script apenas se ainda não existir
-    if (!document.querySelector('script[src*="mercadopago.js"]')) {
-      const script = document.createElement('script')
-      script.src = 'https://sdk.mercadopago.com/v2/mercadopago.js'
-      script.async = true
-      document.head.appendChild(script)
-    }
-
-    // Polling até o SDK aparecer no window (máx 5s, depois libera de qualquer forma)
-    let tentativas = 0
-    const check = setInterval(() => {
-      tentativas++
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      if ((window as any).MercadoPago || tentativas > 10) {
-        clearInterval(check)
-        setMpPronto(true)
-      }
-    }, 500)
-
-    return () => clearInterval(check)
-  }, [])
+  // mpPronto é setado pelo onLoad do <Script> abaixo
 
   useEffect(() => {
     return () => { if (pollingRef.current) clearInterval(pollingRef.current) }
@@ -92,19 +72,8 @@ export default function ComprarPage() {
   }
 
   async function tokenizarCartao(): Promise<{ token: string; issuer: string; paymentMethodId: string } | null> {
-    // Aguarda o SDK estar disponível (até 5s)
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let mp = (window as any).MercadoPago
-    if (!mp) {
-      await new Promise<void>(resolve => {
-        let t = 0
-        const check = setInterval(() => {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          mp = (window as any).MercadoPago
-          if (mp || ++t > 10) { clearInterval(check); resolve() }
-        }, 500)
-      })
-    }
+    const mp = (window as any).MercadoPago
     if (!mp) { setErro('Erro ao carregar o sistema de pagamento. Recarregue a página.'); return null }
     const mpInstance = new mp(MP_PK, { locale: 'pt-BR' })
     const [mes, ano] = card.validade.split('/')
@@ -222,6 +191,15 @@ export default function ComprarPage() {
     })
   }
 
+  // Script do MP — carregado uma única vez pelo Next.js (deduplica por src)
+  const mpScript = (
+    <Script
+      src="https://sdk.mercadopago.com/v2/mercadopago.js"
+      strategy="afterInteractive"
+      onLoad={() => setMpPronto(true)}
+    />
+  )
+
   // ── Tela de sucesso
   if (etapa === 'sucesso') {
     return (
@@ -273,6 +251,8 @@ export default function ComprarPage() {
 
   // ── Formulário principal
   return (
+    <>
+    {mpScript}
     <div className="buy-wrap">
       <div className="buy-card">
         <div className="buy-brand"><span>Precifique</span><span style={{ color: 'var(--pink)' }}>.</span></div>
@@ -389,5 +369,6 @@ export default function ComprarPage() {
         <a href={WPP} target="_blank" rel="noreferrer" className="buy-wpp">Prefiro pagar pelo WhatsApp</a>
       </div>
     </div>
+    </>
   )
 }
