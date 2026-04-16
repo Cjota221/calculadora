@@ -2,7 +2,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
-import { loadMercadoPago } from '@mercadopago/sdk-js'
 import '@/styles/checkout.css'
 
 const WPP = `https://wa.me/5562982237075?text=${encodeURIComponent('Olá! Já paguei o Precifique e preciso de ajuda com meu acesso.')}`
@@ -48,11 +47,6 @@ export default function ComprarPage() {
   const [userId, setUserId] = useState('')
   const [copiado, setCopiado] = useState(false)
   const pollingRef = useRef<ReturnType<typeof setInterval> | null>(null)
-  const [mpPronto, setMpPronto] = useState(false)
-
-  useEffect(() => {
-    loadMercadoPago().then(() => setMpPronto(true)).catch(() => {})
-  }, [])
 
   useEffect(() => {
     return () => { if (pollingRef.current) clearInterval(pollingRef.current) }
@@ -74,32 +68,44 @@ export default function ComprarPage() {
   }
 
   async function tokenizarCartao(): Promise<{ token: string; issuer: string; paymentMethodId: string } | null> {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const mp = (window as any).MercadoPago
-    if (!mp) { setErro('Erro ao carregar o sistema de pagamento. Recarregue a página.'); return null }
-    const mpInstance = new mp(MP_PK, { locale: 'pt-BR' })
     const [mes, ano] = card.validade.split('/')
-    const bin = card.numero.replace(/\s/g, '').slice(0, 6)
-    try {
-      // Buscar payment_method_id pelo BIN
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const methods = await mpInstance.getPaymentMethods({ bin }) as any
-      const paymentMethodId: string = methods?.results?.[0]?.id ?? ''
-      if (!paymentMethodId) { setErro('Bandeira do cartão não identificada. Verifique o número.'); return null }
+    const numLimpo = card.numero.replace(/\s/g, '')
+    const bin = numLimpo.slice(0, 6)
 
-      const result = await mpInstance.createCardToken({
-        cardNumber: card.numero.replace(/\s/g, ''),
-        cardholderName: card.nome,
-        cardExpirationMonth: mes,
-        cardExpirationYear: `20${ano}`,
-        securityCode: card.cvv,
-        identificationType: 'CPF',
-        identificationNumber: card.cpf.replace(/\D/g, ''),
-      })
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      return { token: (result as any).id, issuer: (result as any).issuer?.id, paymentMethodId }
+    try {
+      // 1. Buscar payment_method_id pelo BIN via API pública do MP
+      const binRes = await fetch(
+        `https://api.mercadopago.com/v1/payment_methods/search?bin=${bin}&public_key=${MP_PK}`
+      )
+      const binData = await binRes.json()
+      const paymentMethodId: string = binData?.results?.[0]?.id ?? ''
+      if (!paymentMethodId) { setErro('Bandeira do cartão não identificada. Verifique o número.'); return null }
+      const issuerId: string = String(binData?.results?.[0]?.issuer?.id ?? '')
+
+      // 2. Criar token do cartão via API pública do MP
+      const tokenRes = await fetch(
+        `https://api.mercadopago.com/v1/card_tokens?public_key=${MP_PK}`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            card_number: numLimpo,
+            security_code: card.cvv,
+            expiration_month: Number(mes),
+            expiration_year: Number(`20${ano}`),
+            cardholder: {
+              name: card.nome,
+              identification: { type: 'CPF', number: card.cpf.replace(/\D/g, '') },
+            },
+          }),
+        }
+      )
+      const tokenData = await tokenRes.json()
+      if (!tokenData?.id) { setErro('Erro ao processar cartão. Verifique os dados.'); return null }
+
+      return { token: tokenData.id, issuer: issuerId, paymentMethodId }
     } catch {
-      setErro('Erro ao processar cartão. Verifique os dados.')
+      setErro('Erro ao processar cartão. Verifique sua conexão.')
       return null
     }
   }
