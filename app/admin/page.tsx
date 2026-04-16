@@ -5,6 +5,7 @@ import { StatsCards } from '@/components/admin/StatsCards'
 import { CreateUserForm } from '@/components/admin/CreateUserForm'
 import { UsersTable } from '@/components/admin/UsersTable'
 import { CompradoresTable } from '@/components/admin/CompradoresTable'
+import { LeadsTable } from '@/components/admin/LeadsTable'
 import { TopbarAdmin } from '@/components/layout/TopbarAdmin'
 import { Toast } from '@/components/ui/Toast'
 import type { PrecifiqueUser } from '@/types'
@@ -42,6 +43,7 @@ export default function Admin() {
   const [authed, setAuthed] = useState(false)
   const [users, setUsers] = useState<PrecifiqueUser[]>([])
   const [compradores, setCompradores] = useState<Comprador[]>([])
+  const [leads, setLeads] = useState<{ id: string; nome: string; telefone: string; origem: string; created_at: string }[]>([])
   const [stats, setStats] = useState({ total: 0, ativos: 0, pendentes: 0, faturamento: 0, novosHoje: 0, novosSemana: 0, novosMes: 0, faturamentoMes: 0 })
   const [toast, setToast] = useState('')
   const [toastVisible, setToastVisible] = useState(false)
@@ -69,9 +71,15 @@ export default function Admin() {
     if (!data.error) setStats(data)
   }, [])
 
+  const loadLeads = useCallback(async () => {
+    const res = await fetch('/api/admin/leads')
+    const data = await res.json()
+    setLeads(Array.isArray(data) ? data : [])
+  }, [])
+
   useEffect(() => {
-    if (authed) { loadUsers(); loadCompradores(); loadStats() }
-  }, [authed, loadUsers, loadCompradores, loadStats])
+    if (authed) { loadUsers(); loadCompradores(); loadStats(); loadLeads() }
+  }, [authed, loadUsers, loadCompradores, loadStats, loadLeads])
 
   async function toggleUser(id: string, ativo: boolean) {
     await sbFetch(`precifique_users?id=eq.${id}`, 'PATCH', { ativo })
@@ -163,7 +171,10 @@ export default function Admin() {
           onError={showToast}
         />
 
-        <h2 className="section-title">Compradores (checkout automático)</h2>
+        <h2 className="section-title">Leads do popup</h2>
+        <LeadsTable leads={leads} onRefresh={loadLeads} />
+
+        <h2 className="section-title" style={{ marginTop: '2.5rem' }}>Compradores (checkout automático)</h2>
         <CompradoresTable compradores={compradores} onRefresh={loadCompradores} />
 
         <h2 className="section-title" style={{ marginTop: '2.5rem' }}>Acessos manuais (legado)</h2>
