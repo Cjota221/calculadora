@@ -5,7 +5,6 @@ import Image from 'next/image'
 import '@/styles/checkout.css'
 
 const WPP = `https://wa.me/5562982237075?text=${encodeURIComponent('Olá! Já paguei o Precifique e preciso de ajuda com meu acesso.')}`
-const MP_PK = process.env.NEXT_PUBLIC_MP_PUBLIC_KEY!
 
 type Metodo = 'pix' | 'cartao'
 type Etapa = 'form' | 'pix-aguardando' | 'sucesso'
@@ -81,41 +80,22 @@ export default function ComprarPage() {
 
   async function tokenizarCartao(): Promise<{ token: string; issuer: string; paymentMethodId: string } | null> {
     const [mes, ano] = card.validade.split('/')
-    const numLimpo = card.numero.replace(/\s/g, '')
-    const bin = numLimpo.slice(0, 6)
-
     try {
-      // 1. Buscar payment_method_id pelo BIN via API pública do MP
-      const binRes = await fetch(
-        `https://api.mercadopago.com/v1/payment_methods/search?bin=${bin}&public_key=${MP_PK}`
-      )
-      const binData = await binRes.json()
-      const paymentMethodId: string = binData?.results?.[0]?.id ?? ''
-      if (!paymentMethodId) { setErro('Bandeira do cartão não identificada. Verifique o número.'); return null }
-      const issuerId: string = String(binData?.results?.[0]?.issuer?.id ?? '')
-
-      // 2. Criar token do cartão via API pública do MP
-      const tokenRes = await fetch(
-        `https://api.mercadopago.com/v1/card_tokens?public_key=${MP_PK}`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            card_number: numLimpo,
-            security_code: card.cvv,
-            expiration_month: Number(mes),
-            expiration_year: Number(`20${ano}`),
-            cardholder: {
-              name: card.nome,
-              identification: { type: 'CPF', number: card.cpf.replace(/\D/g, '') },
-            },
-          }),
-        }
-      )
-      const tokenData = await tokenRes.json()
-      if (!tokenData?.id) { setErro('Erro ao processar cartão. Verifique os dados.'); return null }
-
-      return { token: tokenData.id, issuer: issuerId, paymentMethodId }
+      const res = await fetch('/api/checkout/tokenizar-cartao', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          cardNumber: card.numero,
+          cardholderName: card.nome,
+          expirationMonth: mes,
+          expirationYear: ano,
+          securityCode: card.cvv,
+          cpf: card.cpf,
+        }),
+      })
+      const data = await res.json()
+      if (!res.ok) { setErro(data.error || 'Erro ao processar cartão.'); return null }
+      return { token: data.token, issuer: data.issuerId, paymentMethodId: data.paymentMethodId }
     } catch {
       setErro('Erro ao processar cartão. Verifique sua conexão.')
       return null

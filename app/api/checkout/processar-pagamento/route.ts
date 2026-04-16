@@ -50,7 +50,9 @@ export async function POST(req: NextRequest) {
       }
     }
 
+    console.log('[processar] body enviado ao MP:', JSON.stringify(baseBody))
     const payment = await mpPayment.create({ body: baseBody as Parameters<typeof mpPayment.create>[0]['body'] })
+    console.log('[processar] resposta MP — status:', payment.status, 'detail:', payment.status_detail, 'id:', payment.id)
 
     // Salvar payment_id no banco
     await supabaseAdmin
