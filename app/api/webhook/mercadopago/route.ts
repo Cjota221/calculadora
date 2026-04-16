@@ -36,7 +36,7 @@ export async function POST(req: NextRequest) {
     // REGRA 2: Buscar usuária por external_ref OU payment_id
     const { data: usuario } = await supabaseAdmin
       .from('usuarios_precifique')
-      .select('id, auth_user_id, status')
+      .select('id, auth_user_id, status, nome, email, telefone')
       .or(`mp_external_ref.eq.${externalRef},mp_payment_id.eq.${paymentId}`)
       .maybeSingle()
 
@@ -71,6 +71,20 @@ export async function POST(req: NextRequest) {
     }
 
     console.log('✅ Conta ativada:', usuario.id, 'payment:', paymentId)
+
+    // Disparar pagamento_confirmado no n8n (fire-and-forget)
+    if (usuario.telefone) {
+      fetch(`${process.env.N8N_URL}/webhook/pagamento-confirmado`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: usuario.nome,
+          email: usuario.email,
+          phone: usuario.telefone,
+        }),
+      }).catch(() => {})
+    }
+
     return NextResponse.json({ ok: true })
   } catch (err) {
     console.error('Webhook MP erro:', err)

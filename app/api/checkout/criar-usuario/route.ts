@@ -122,6 +122,17 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: `Erro ao salvar cadastro: ${dbError.message}` }, { status: 500 })
     }
 
+    // Disparar lead_cadastro no n8n (fire-and-forget)
+    fetch(`${process.env.N8N_URL}/webhook/lead-cadastro`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: nome.trim(),
+        email: email.toLowerCase().trim(),
+        phone: telefone?.trim() || '',
+      }),
+    }).catch(() => {})
+
     return NextResponse.json({ userId, externalRef })
   } catch {
     return NextResponse.json({ error: 'Erro interno. Tente novamente.' }, { status: 500 })
