@@ -27,8 +27,14 @@ function LoginForm() {
   const [error, setError] = useState('')
 
   useEffect(() => {
+    // Se veio do checkout (welcome=true), limpa sessão anterior e força novo login
+    if (welcome) {
+      localStorage.removeItem('precifique_user')
+      supabase.auth.signOut()
+      return
+    }
     if (localStorage.getItem('precifique_user')) router.replace('/app')
-  }, [router])
+  }, [router, welcome])
 
   async function doLogin() {
     if (!login || !password) { setError('Preencha login e senha.'); return }
