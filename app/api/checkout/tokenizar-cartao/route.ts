@@ -29,27 +29,20 @@ export async function POST(req: NextRequest) {
     const binData: any = await binRes.json()
     console.log('[tokenizar] binData status:', binRes.status, 'results:', binData?.results?.length ?? 0)
 
-    // Filtrar para pegar bandeira real (visa/master/elo etc), ignorar consumer_credits e similares
-    const CARD_IDS = ['visa', 'master', 'elo', 'amex', 'hipercard', 'diners', 'cabal', 'naranja', 'debvisa', 'debmaster', 'debelo']
+    // Prioridade: crédito antes de débito, bandeiras reais antes de consumer_credits
+    const PRIORITY = ['visa', 'master', 'elo', 'amex', 'hipercard', 'diners', 'cabal', 'naranja', 'debvisa', 'debmaster', 'debelo']
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const results: any[] = binData?.results ?? []
-    const method = results.find(r => CARD_IDS.includes(r.id))
-      ?? results.find(r => r.payment_type_id === 'credit_card' || r.payment_type_id === 'debit_card')
-      ?? results[0]
+    const ranked = results
+      .filter(r => PRIORITY.includes(r.id))
+      .sort((a, b) => PRIORITY.indexOf(a.id) - PRIORITY.indexOf(b.id))
+    const method = ranked[0]
+      ?? results.find(r => r.payment_type_id === 'credit_card')
+      ?? results.find(r => r.payment_type_id === 'debit_card')
 
     let paymentMethodId: string = method?.id ?? ''
-    let issuerId: string = String(method?.issuer?.id ?? '')
-
-    // Fallback: detectar bandeira pelo prefixo do BIN
-    if (!paymentMethodId || paymentMethodId === 'consumer_credits') {
-      const first = bin[0]
-      if (first === '4') paymentMethodId = 'visa'
-      else if (first === '5') paymentMethodId = 'master'
-      else if (first === '3') paymentMethodId = 'amex'
-      else if (first === '6') paymentMethodId = 'elo'
-      issuerId = ''
-      console.log('[tokenizar] fallback bandeira pelo prefixo:', paymentMethodId)
-    }
+    let issuerId: string = method?.issuer?.id ? String(method.issuer.id) : ''
+    console.log('[tokenizar] ranked[0]:', ranked[0]?.id, 'all ranked:', ranked.map((r: {id: string}) => r.id).join(','))
     console.log('[tokenizar] paymentMethodId:', paymentMethodId, 'issuerId:', issuerId)
 
     if (!paymentMethodId) {
