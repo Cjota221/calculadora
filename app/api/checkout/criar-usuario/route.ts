@@ -41,10 +41,11 @@ export async function POST(req: NextRequest) {
     })
 
     if (authError) {
+      console.error('Auth createUser error:', authError.message)
       if (authError.message.includes('already registered')) {
         return NextResponse.json({ error: 'Esse email já tem acesso. Faça login.' }, { status: 409 })
       }
-      return NextResponse.json({ error: 'Erro ao criar conta. Tente novamente.' }, { status: 500 })
+      return NextResponse.json({ error: `Erro ao criar conta: ${authError.message}` }, { status: 500 })
     }
 
     const userId = randomUUID()
@@ -63,9 +64,9 @@ export async function POST(req: NextRequest) {
       })
 
     if (dbError) {
-      // Rollback: deletar user do Auth se falhou no banco
+      console.error('DB insert error:', dbError.message, dbError.code)
       await supabaseAdmin.auth.admin.deleteUser(authUser.user.id)
-      return NextResponse.json({ error: 'Erro ao salvar cadastro. Tente novamente.' }, { status: 500 })
+      return NextResponse.json({ error: `Erro ao salvar cadastro: ${dbError.message}` }, { status: 500 })
     }
 
     return NextResponse.json({ userId, externalRef })
