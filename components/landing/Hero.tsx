@@ -46,6 +46,23 @@ export function Hero() {
         </div>
 
         <p className="hero-note">Após o pagamento, clique no botão verde e envie o comprovante pelo WhatsApp</p>
+
+        <div className="hero-stats">
+          <div className="hero-stat">
+            <span className="hero-stat-num">4</span>
+            <span className="hero-stat-lbl">Ferramentas</span>
+          </div>
+          <div className="hero-stat-div" />
+          <div className="hero-stat">
+            <span className="hero-stat-num">R$24</span>
+            <span className="hero-stat-lbl">Paga uma vez</span>
+          </div>
+          <div className="hero-stat-div" />
+          <div className="hero-stat">
+            <span className="hero-stat-num">∞</span>
+            <span className="hero-stat-lbl">Cálculos</span>
+          </div>
+        </div>
       </div>
     </section>
   )

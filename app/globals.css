@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@300;400;500;600;700;800&family=Lexend+Giga:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=Lexend+Deca:wght@300;400;500;600;700;800&display=swap');
 @import "tailwindcss";
 
 :root {
@@ -34,7 +34,7 @@
   --text3: #6B6360;
 
   /* Typography */
-  --font-d: 'Lexend Giga', sans-serif;   /* display: títulos, wordmark, números grandes */
+  --font-d: 'Sora', sans-serif;          /* display: títulos, wordmark, números grandes */
   --font-s: 'Lexend Deca', sans-serif;   /* body: UI, labels, inputs, botões */
 
   /* Font scale (use estas, não invente tamanhos) */
