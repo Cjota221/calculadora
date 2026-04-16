@@ -76,8 +76,11 @@ export default function AppPage() {
             result={calc.result}
             discount={calc.discount} setDiscount={calc.setDiscount}
             promoOpen={calc.promoOpen} onTogglePromo={() => calc.setPromoOpen(o => !o)}
+            nomeProduto={calc.nomeProduto}
+            onNomeProdutoChange={calc.setNomeProduto}
+            salvando={calc.salvando}
+            onSalvarCalculo={() => calc.salvarCalculo(user!.id, showToast)}
             onCalcular={() => calc.calcular(showToast)}
-            onSendWhatsApp={calc.sendWhatsApp}
           />
         </div>
 

@@ -1,7 +1,7 @@
 'use client'
 import { useState } from 'react'
 import type { DynamicRow, CalcResult, MargemLevel } from '@/types'
-import { fmt } from '@/lib/formatCurrency'
+import { ga } from '@/lib/gtag'
 
 export function useCalculadora() {
   const [cost, setCost] = useState('')
@@ -12,6 +12,8 @@ export function useCalculadora() {
   const [result, setResult] = useState<CalcResult | null>(null)
   const [discount, setDiscount] = useState('')
   const [promoOpen, setPromoOpen] = useState(false)
+  const [nomeProduto, setNomeProduto] = useState('')
+  const [salvando, setSalvando] = useState(false)
 
   let nextId = Date.now()
 
@@ -66,21 +68,33 @@ export function useCalculadora() {
     setPromoOpen(false)
   }
 
-  function sendWhatsApp(): void {
-    if (!result) return
-    const d = parseFloat(discount) || 0
-    let t = '*Precificação calculada*\n\n'
-    t += `Custo base: ${fmt(result.base)}\n`
-    t += `Preço de venda: *${fmt(result.price)}*\n`
-    t += `Margem: ${result.margin}%\n`
-    if (d > 0) {
-      const pp = result.price * (1 - d / 100)
-      t += `\n*Promoção ${d}% de desconto:*\n`
-      t += `Preço promocional: *${fmt(pp)}*\n`
-      t += `Lucro na promoção: ${fmt(pp - result.base)}\n`
+  async function salvarCalculo(userId: string, onToast: (msg: string) => void): Promise<void> {
+    if (!result || !userId) return
+    setSalvando(true)
+    try {
+      const res = await fetch('/api/calculos/salvar', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          usuario_id: userId,
+          nome: nomeProduto || null,
+          custo: parseFloat(cost) || 0,
+          frete: parseFloat(freightUnit) || 0,
+          despesas,
+          taxas,
+          margem: result.margin,
+          preco_venda: result.price,
+          lucro: result.profit,
+        }),
+      })
+      if (!res.ok) throw new Error('Erro ao salvar')
+      ga.salvarCalculo()
+      onToast('Cálculo salvo com sucesso!')
+    } catch {
+      onToast('Erro ao salvar. Tente novamente.')
+    } finally {
+      setSalvando(false)
     }
-    t += '\n_Calculado com Precifique_'
-    window.open('https://wa.me/?text=' + encodeURIComponent(t), '_blank')
   }
 
   const promoPrice = result && parseFloat(discount) > 0
@@ -97,8 +111,10 @@ export function useCalculadora() {
     result,
     discount, setDiscount,
     promoOpen, setPromoOpen,
+    nomeProduto, setNomeProduto,
+    salvando,
     promoPrice, promoProfit,
     addRow, removeRow, updateRow,
-    calcular, sendWhatsApp,
+    calcular, salvarCalculo,
   }
 }

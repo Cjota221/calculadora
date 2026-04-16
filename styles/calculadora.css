@@ -95,9 +95,10 @@ input::placeholder { color: var(--text3); font-weight: 400; opacity: 1; }
 .btn-ghost { background: transparent; color: var(--text2); border: 1.5px solid var(--border); margin-top: 0.65rem; font-size: var(--fs-sm); font-weight: 600; }
 .btn-ghost:hover { border-color: var(--border2); color: var(--text); background: var(--bg3); }
 .btn-ghost svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
-.btn-wpp { background: #25D366; color: #fff; box-shadow: 0 4px 14px rgba(37,211,102,0.22); margin-top: 0.65rem; }
-.btn-wpp:hover { filter: brightness(1.06); transform: translateY(-1px); }
-.btn-wpp svg { width: 17px; height: 17px; fill: #fff; flex-shrink: 0; }
+.btn-save { background: var(--pink); color: #fff; box-shadow: 0 4px 14px rgba(124,58,237,0.22); margin-top: 0.65rem; }
+.btn-save:hover:not(:disabled) { filter: brightness(1.06); transform: translateY(-1px); }
+.btn-save:disabled { opacity: 0.65; cursor: not-allowed; transform: none; }
+.btn-save svg { width: 17px; height: 17px; stroke: #fff; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
 
 /* ── Result Box ─────────────────────────────────────── */
 .result { border-radius: var(--radius); padding: 1.4rem; margin-top: 1.25rem; }
