@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import '@/styles/landing.css'
 import { Navbar } from '@/components/layout/Navbar'
+import { OfertaBanner } from '@/components/landing/OfertaBanner'
 import { Hero } from '@/components/landing/Hero'
 import { SocialProof } from '@/components/landing/SocialProof'
 import { Features } from '@/components/landing/Features'
@@ -51,6 +52,7 @@ export default function Landing() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
+      <OfertaBanner />
       <Navbar />
       <Hero />
       <SocialProof />

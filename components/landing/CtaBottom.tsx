@@ -7,7 +7,10 @@ export function CtaBottom() {
         <div className="cta-eyebrow">Oferta única</div>
         <h2>Pronta para precificar<br /><em>com inteligência?</em></h2>
         <p>Pare de perder dinheiro por preço errado.<br />Invista uma única vez e lucre para sempre.</p>
-        <div className="cta-price-inline">R$ 24,99 · acesso vitalício</div>
+        <div className="cta-price-inline">
+          <s style={{ opacity: 0.55, fontWeight: 400, fontSize: '0.9em' }}>R$ 34,99</s>
+          {' '}<strong>R$ 24,99</strong> · acesso vitalício · oferta por tempo limitado
+        </div>
         <div className="cta-cta-wrap">
           <a href="/comprar" className="btn-buy-white">
             <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">

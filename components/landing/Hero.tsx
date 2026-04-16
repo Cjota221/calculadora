@@ -21,7 +21,10 @@ export function Hero() {
         </p>
 
         <div className="hero-price-wrap">
-          <div className="hero-price-from">Acesso único por apenas</div>
+          <div className="hero-price-from">
+            <s style={{ color: 'var(--text3)', fontWeight: 400 }}>De R$ 34,99</s>
+            {' '}· Oferta por tempo limitado
+          </div>
           <div className="hero-price-val">
             <span className="price-cur">R$</span>
             <span className="price-int">24</span>
@@ -36,7 +39,7 @@ export function Hero() {
               <path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z" />
               <line x1="7" y1="7" x2="7.01" y2="7" />
             </svg>
-            Quero meu acesso por R$ 24,99
+            Garantir oferta por R$ 24,99
           </a>
           <a href={`https://wa.me/5562982237075?text=${WPP_MSG}`} className="btn-wpp-hero" target="_blank" rel="noreferrer">
             <svg viewBox="0 0 24 24" width="17" height="17" fill="#1A9E5C">
@@ -55,7 +58,7 @@ export function Hero() {
           </div>
           <div className="hero-stat-div" />
           <div className="hero-stat">
-            <span className="hero-stat-num">R$24</span>
+            <span className="hero-stat-num">R$24,99</span>
             <span className="hero-stat-lbl">Paga uma vez</span>
           </div>
           <div className="hero-stat-div" />
