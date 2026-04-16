@@ -50,19 +50,30 @@ export default function ComprarPage() {
   const [mpPronto, setMpPronto] = useState(false)
 
   useEffect(() => {
-    // Se já carregou (ex: hot reload), marca como pronto
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    if ((window as any).MercadoPago) { setMpPronto(true); return }
-
-    const script = document.createElement('script')
-    script.src = 'https://sdk.mercadopago.com/v2/mercadopago.js'
-    script.async = true
-    script.onload = () => setMpPronto(true)
-    script.onerror = () => console.error('Falha ao carregar SDK do MP')
-    document.head.appendChild(script)
-    return () => {
-      try { document.head.removeChild(script) } catch { /* já removido */ }
+    // Adiciona o script apenas se ainda não existir
+    if (!document.querySelector('script[src*="mercadopago.js"]')) {
+      const script = document.createElement('script')
+      script.src = 'https://sdk.mercadopago.com/v2/mercadopago.js'
+      script.async = true
+      document.head.appendChild(script)
     }
+
+    // Polling até o SDK aparecer no window (máx 15s)
+    let tentativas = 0
+    const check = setInterval(() => {
+      tentativas++
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      if ((window as any).MercadoPago) {
+        clearInterval(check)
+        setMpPronto(true)
+      } else if (tentativas > 30) {
+        clearInterval(check)
+        // SDK demorou — permite tentar mesmo assim
+        setMpPronto(true)
+      }
+    }, 500)
+
+    return () => clearInterval(check)
   }, [])
 
   useEffect(() => {
