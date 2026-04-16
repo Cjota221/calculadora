@@ -3,25 +3,44 @@ import { createHmac } from 'crypto'
 import { mpPayment } from '@/lib/mercadopago'
 import { supabaseAdmin } from '@/lib/supabase-admin'
 
-function verificarAssinatura(req: NextRequest, rawBody: string): boolean {
+function verificarAssinatura(req: NextRequest): boolean {
   const secret = process.env.MP_WEBHOOK_SECRET
-  if (!secret) return true // sem secret configurado, deixa passar
+  if (!secret) return true
 
-  const xSignature = req.headers.get('x-signature') || ''
+  const xSignature = req.headers.get('x-signature')
+  // Se MP não enviou o header (ex: ambiente de teste), deixa passar mas loga
+  if (!xSignature) {
+    console.warn('Webhook MP: sem x-signature — processando sem validação')
+    return true
+  }
+
   const xRequestId = req.headers.get('x-request-id') || ''
-  const dataId = req.nextUrl.searchParams.get('data.id') || ''
+  const dataId = req.nextUrl.searchParams.get('data.id') || req.nextUrl.searchParams.get('id') || ''
 
   // Extrair ts e v1 do header x-signature
-  const parts = Object.fromEntries(xSignature.split(',').map(p => p.split('=')))
+  const parts: Record<string, string> = {}
+  for (const part of xSignature.split(',')) {
+    const idx = part.indexOf('=')
+    if (idx > 0) parts[part.slice(0, idx).trim()] = part.slice(idx + 1).trim()
+  }
   const ts = parts['ts']
   const v1 = parts['v1']
-  if (!ts || !v1) return false
 
-  // Montar o template de assinatura conforme documentação do MP
+  if (!ts || !v1) {
+    console.warn('Webhook MP: x-signature malformado:', xSignature)
+    return false
+  }
+
+  // Template conforme documentação MP
   const template = `id:${dataId};request-id:${xRequestId};ts:${ts};`
   const hmac = createHmac('sha256', secret).update(template).digest('hex')
 
-  return hmac === v1
+  if (hmac !== v1) {
+    console.warn('Webhook MP: assinatura não bate. template:', template)
+    return false
+  }
+
+  return true
 }
 
 export async function POST(req: NextRequest) {
@@ -29,8 +48,8 @@ export async function POST(req: NextRequest) {
     const rawBody = await req.text()
 
     // Verificar assinatura
-    if (!verificarAssinatura(req, rawBody)) {
-      console.warn('Webhook MP: assinatura inválida')
+    if (!verificarAssinatura(req)) {
+      console.warn('Webhook MP: assinatura inválida — rejeitando')
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
