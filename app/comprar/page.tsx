@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
+import { ga } from '@/lib/gtag'
 import '@/styles/checkout.css'
 
 const WPP = `https://wa.me/5562982237075?text=${encodeURIComponent('Olá! Já paguei o Precifique e preciso de ajuda com meu acesso.')}`
@@ -117,6 +118,7 @@ export default function ComprarPage() {
         const data = await res.json()
         if (data.status === 'ativo') {
           clearInterval(pollingRef.current!)
+          ga.compraConfirmada()
           setEtapa('sucesso')
           setTimeout(() => router.replace('/login?welcome=true'), 2000)
         }
@@ -128,6 +130,7 @@ export default function ComprarPage() {
     const err = validar()
     if (err) { setErro(err); return }
     setErro(''); setLoading(true)
+    ga.iniciarCheckout()
 
     try {
       // 1. Criar usuária
@@ -165,6 +168,7 @@ export default function ComprarPage() {
       if (!resPag.ok) { setErro(dataPag.error || dataPag.motivo || 'Pagamento recusado.'); setLoading(false); return }
 
       if (metodo === 'pix') {
+        ga.gerarPix()
         setQrCode(dataPag.qrCode || '')
         setQrBase64(dataPag.qrCodeBase64 || '')
         setPaymentId(String(dataPag.paymentId))
@@ -172,6 +176,7 @@ export default function ComprarPage() {
         iniciarPolling(String(dataPag.paymentId), uid)
       } else {
         if (dataPag.status === 'approved') {
+          ga.compraConfirmada()
           setEtapa('sucesso')
           setTimeout(() => router.replace('/login?welcome=true'), 2000)
         } else {
@@ -290,7 +295,7 @@ export default function ComprarPage() {
         {/* Método */}
         <div className="buy-section-label">Forma de pagamento</div>
         <div className="metodo-wrap">
-          <button className={`metodo-btn${metodo === 'pix' ? ' active' : ''}`} onClick={() => setMetodo('pix')}>
+          <button className={`metodo-btn${metodo === 'pix' ? ' active' : ''}`} onClick={() => { setMetodo('pix'); ga.selecionarPix() }}>
             <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
               <line x1="14" y1="14" x2="14" y2="14"/><line x1="17" y1="14" x2="17" y2="14"/>
@@ -299,7 +304,7 @@ export default function ComprarPage() {
             </svg>
             Pix
           </button>
-          <button className={`metodo-btn${metodo === 'cartao' ? ' active' : ''}`} onClick={() => setMetodo('cartao')}>
+          <button className={`metodo-btn${metodo === 'cartao' ? ' active' : ''}`} onClick={() => { setMetodo('cartao'); ga.selecionarCartao() }}>
             <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/>
             </svg>

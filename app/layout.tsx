@@ -1,5 +1,8 @@
 import type { Metadata, Viewport } from 'next'
+import Script from 'next/script'
 import './globals.css'
+
+const GA_ID = 'G-5J3BJMJNKN'
 
 export const viewport: Viewport = {
   themeColor: '#7C3AED',
@@ -32,7 +35,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="shortcut icon" href="/Logo.png" type="image/png" />
         <link rel="apple-touch-icon" href="/Logo.png" />
       </head>
-      <body>{children}</body>
+      <body>
+        {children}
+        <Script src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`} strategy="afterInteractive" />
+        <Script id="ga-init" strategy="afterInteractive">{`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', '${GA_ID}');
+        `}</Script>
+      </body>
     </html>
   )
 }

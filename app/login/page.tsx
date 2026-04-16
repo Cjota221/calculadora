@@ -4,6 +4,7 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { createClient } from '@supabase/supabase-js'
 import Link from 'next/link'
 import { Suspense } from 'react'
+import { ga } from '@/lib/gtag'
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const SUPABASE_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
@@ -74,6 +75,7 @@ function LoginForm() {
           }
 
           if (userData?.status === 'ativo') {
+            ga.loginSucesso()
             localStorage.setItem('precifique_user', JSON.stringify({
               id: userData.id,
               nome: userData.nome,
@@ -109,6 +111,7 @@ function LoginForm() {
       const data = await res.json()
 
       if (data?.length > 0) {
+        ga.loginSucesso()
         fetch(`${SUPABASE_URL}/rest/v1/precifique_users?id=eq.${data[0].id}`, {
           method: 'PATCH',
           headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' },
@@ -121,6 +124,7 @@ function LoginForm() {
         return
       }
 
+      ga.loginErro('credenciais_invalidas')
       setError('Login ou senha incorretos.')
     } catch {
       setError('Erro de conexão. Tente novamente.')
