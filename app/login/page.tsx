@@ -43,6 +43,13 @@ function LoginForm() {
     try {
       // Tentativa 1: Supabase Auth (novos usuários — login por email)
       if (login.includes('@')) {
+        // Garante que o email está confirmado (pode ter sido criado antes do fix)
+        await fetch('/api/auth/confirmar-email', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: login.trim() }),
+        })
+
         const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
           email: login.trim(),
           password,
