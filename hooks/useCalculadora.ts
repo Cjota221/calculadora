@@ -13,6 +13,7 @@ export function useCalculadora() {
   const [discount, setDiscount] = useState('')
   const [promoOpen, setPromoOpen] = useState(false)
   const [nomeProduto, setNomeProduto] = useState('')
+  const [dataVenda, setDataVenda] = useState('')
   const [salvando, setSalvando] = useState(false)
 
   let nextId = Date.now()
@@ -85,6 +86,7 @@ export function useCalculadora() {
           margem: result.margin,
           preco_venda: result.price,
           lucro: result.profit,
+          data_venda: dataVenda || null,
         }),
       })
       if (!res.ok) throw new Error('Erro ao salvar')
@@ -112,6 +114,7 @@ export function useCalculadora() {
     discount, setDiscount,
     promoOpen, setPromoOpen,
     nomeProduto, setNomeProduto,
+    dataVenda, setDataVenda,
     salvando,
     promoPrice, promoProfit,
     addRow, removeRow, updateRow,

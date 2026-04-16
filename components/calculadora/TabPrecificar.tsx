@@ -29,6 +29,8 @@ interface TabPrecificarProps {
   onTogglePromo: () => void
   nomeProduto: string
   onNomeProdutoChange: (v: string) => void
+  dataVenda: string
+  onDataVendaChange: (v: string) => void
   salvando: boolean
   onSalvarCalculo: () => void
   onCalcular: () => void
@@ -41,7 +43,8 @@ export function TabPrecificar({
   onAddTaxa, onRemoveTaxa, onUpdateTaxa,
   freteCalculado, onUsarFreteCalculado,
   result, discount, setDiscount, promoOpen, onTogglePromo,
-  nomeProduto, onNomeProdutoChange, salvando, onSalvarCalculo,
+  nomeProduto, onNomeProdutoChange, dataVenda, onDataVendaChange,
+  salvando, onSalvarCalculo,
   onCalcular,
 }: TabPrecificarProps) {
   return (
@@ -146,15 +149,26 @@ export function TabPrecificar({
             />
           </div>
 
-          <div className="field" style={{ marginTop: '0.75rem' }}>
-            <label>Nome deste produto <span style={{ fontWeight: 400, color: 'var(--text-muted, #6B6360)' }}>(opcional)</span></label>
-            <input
-              type="text"
-              className="input"
-              placeholder="Ex: Bolsa de couro caramelo"
-              value={nomeProduto}
-              onChange={e => onNomeProdutoChange(e.target.value)}
-            />
+          <div className="field-row" style={{ marginTop: '0.75rem' }}>
+            <div className="field">
+              <label>Nome do produto <span style={{ fontWeight: 400, color: '#6B6360' }}>(opcional)</span></label>
+              <input
+                type="text"
+                className="input"
+                placeholder="Ex: Bolsa de couro caramelo"
+                value={nomeProduto}
+                onChange={e => onNomeProdutoChange(e.target.value)}
+              />
+            </div>
+            <div className="field">
+              <label>Data da venda <span style={{ fontWeight: 400, color: '#6B6360' }}>(opcional)</span></label>
+              <input
+                type="date"
+                className="input"
+                value={dataVenda}
+                onChange={e => onDataVendaChange(e.target.value)}
+              />
+            </div>
           </div>
           <button className="btn btn-save" onClick={onSalvarCalculo} disabled={salvando}>
             <svg viewBox="0 0 24 24">

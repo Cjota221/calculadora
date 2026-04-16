@@ -10,6 +10,7 @@ CREATE TABLE IF NOT EXISTS calculos_salvos (
   margem      NUMERIC NOT NULL,
   preco_venda NUMERIC NOT NULL,
   lucro       NUMERIC NOT NULL,
+  data_venda  DATE,
   created_at  TIMESTAMPTZ DEFAULT NOW()
 );
 

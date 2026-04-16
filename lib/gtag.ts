@@ -56,12 +56,23 @@ export const ga = {
   gerarPix: () => event('generate_pix', { currency: 'BRL', value: 24.99 }),
 
   // COMPRA CONFIRMADA — evento de conversão principal
-  compraConfirmada: (transactionId?: string) => event('purchase', {
-    transaction_id: transactionId ?? Date.now().toString(),
-    currency: 'BRL',
-    value: 24.99,
-    items: [PRODUTO],
-  }),
+  // Chama onDone() depois que o GA confirma o envio (ou após 1s de fallback)
+  compraConfirmada: (transactionId?: string, onDone?: () => void) => {
+    if (typeof window === 'undefined') { onDone?.(); return }
+    const gtag = (window as any).gtag
+    if (!gtag) { onDone?.(); return }
+    const timeout = onDone ? setTimeout(onDone, 1000) : null
+    gtag('event', 'purchase', {
+      transaction_id: transactionId ?? Date.now().toString(),
+      currency: 'BRL',
+      value: 24.99,
+      items: [PRODUTO],
+      event_callback: () => {
+        if (timeout) clearTimeout(timeout)
+        onDone?.()
+      },
+    })
+  },
 
   // Login
   loginSucesso: () => event('login', { method: 'email' }),

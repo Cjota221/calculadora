@@ -78,6 +78,8 @@ export default function AppPage() {
             promoOpen={calc.promoOpen} onTogglePromo={() => calc.setPromoOpen(o => !o)}
             nomeProduto={calc.nomeProduto}
             onNomeProdutoChange={calc.setNomeProduto}
+            dataVenda={calc.dataVenda}
+            onDataVendaChange={calc.setDataVenda}
             salvando={calc.salvando}
             onSalvarCalculo={() => calc.salvarCalculo(user!.id, showToast)}
             onCalcular={() => calc.calcular(showToast)}

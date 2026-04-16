@@ -122,9 +122,8 @@ export default function ComprarPage() {
         const data = await res.json()
         if (data.status === 'ativo') {
           clearInterval(pollingRef.current!)
-          ga.compraConfirmada(paymentId)
           setEtapa('sucesso')
-          setTimeout(() => router.replace('/login?welcome=true'), 2000)
+          ga.compraConfirmada(paymentId, () => router.replace('/login?welcome=true'))
         }
       } catch { /* continua */ }
     }, 5000)
@@ -180,9 +179,8 @@ export default function ComprarPage() {
         iniciarPolling(String(dataPag.paymentId), uid)
       } else {
         if (dataPag.status === 'approved') {
-          ga.compraConfirmada(String(dataPag.paymentId))
           setEtapa('sucesso')
-          setTimeout(() => router.replace('/login?welcome=true'), 2000)
+          ga.compraConfirmada(String(dataPag.paymentId), () => router.replace('/login?welcome=true'))
         } else {
           setErro(dataPag.motivo || 'Pagamento pendente. Aguarde ou tente novamente.')
         }
