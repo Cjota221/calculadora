@@ -92,9 +92,20 @@ export default function ComprarPage() {
   }
 
   async function tokenizarCartao(): Promise<{ token: string; issuer: string; paymentMethodId: string } | null> {
+    // Aguarda o SDK estar disponível (até 5s)
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const mp = (window as any).MercadoPago
-    if (!mp || !mpPronto) { setErro('Aguarde o carregamento da página e tente novamente.'); return null }
+    let mp = (window as any).MercadoPago
+    if (!mp) {
+      await new Promise<void>(resolve => {
+        let t = 0
+        const check = setInterval(() => {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          mp = (window as any).MercadoPago
+          if (mp || ++t > 10) { clearInterval(check); resolve() }
+        }, 500)
+      })
+    }
+    if (!mp) { setErro('Erro ao carregar o sistema de pagamento. Recarregue a página.'); return null }
     const mpInstance = new mp(MP_PK, { locale: 'pt-BR' })
     const [mes, ano] = card.validade.split('/')
     const bin = card.numero.replace(/\s/g, '').slice(0, 6)
@@ -362,11 +373,9 @@ export default function ComprarPage() {
 
         {erro && <div className="buy-error">{erro}</div>}
 
-        <button className="btn-pagar" onClick={pagar} disabled={loading || (metodo === 'cartao' && !mpPronto)}>
+        <button className="btn-pagar" onClick={pagar} disabled={loading}>
           {loading
             ? <span className="spinner" />
-            : metodo === 'cartao' && !mpPronto
-            ? 'Carregando...'
             : metodo === 'pix' ? 'Gerar Pix — R$ 24,99' : 'Pagar R$ 24,99 no cartão'}
         </button>
 
