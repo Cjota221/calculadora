@@ -64,8 +64,8 @@ input::placeholder { color: var(--text3); font-weight: 400; opacity: 1; }
 /* ── Dynamic Rows ───────────────────────────────────── */
 .row-list { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 0.75rem; }
 .drow, .trow { display: grid; gap: 0.5rem; align-items: center; }
-.drow { grid-template-columns: 1fr auto auto; }
-.trow { grid-template-columns: 1fr auto auto; }
+.drow { grid-template-columns: 1fr 7.5rem 44px; }
+.trow { grid-template-columns: 1fr 6.5rem 44px; }
 .drow input[type=text],
 .trow input[type=text] { font-size: var(--fs-base); }
 .drow input[type=number],
@@ -186,7 +186,8 @@ input::placeholder { color: var(--text3); font-weight: 400; opacity: 1; }
 
 /* ── Avatar ─────────────────────────────────────────── */
 .avatar-wrap { position: relative; display: flex; align-items: center; }
-.avatar-btn { position: relative; width: 36px; height: 36px; border-radius: 50%; border: 2px solid var(--border); background: var(--pink-dim); cursor: pointer; overflow: hidden; padding: 0; flex-shrink: 0; transition: border-color 0.2s, box-shadow 0.2s; }
+.avatar-btn { position: relative; width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--border); background: var(--pink-dim); cursor: pointer; overflow: hidden; padding: 0; flex-shrink: 0; transition: border-color 0.2s, box-shadow 0.2s; }
+@media (max-width: 480px) { .avatar-btn { width: 48px; height: 48px; } }
 .avatar-btn:hover { border-color: var(--pink); box-shadow: 0 0 0 3px var(--pink-glow); }
 .avatar-btn:focus-visible { outline: 2px solid var(--pink); outline-offset: 3px; }
 .avatar-img { width: 100%; height: 100%; object-fit: cover; display: block; border-radius: 50%; }
@@ -199,13 +200,16 @@ input::placeholder { color: var(--text3); font-weight: 400; opacity: 1; }
 .avatar-spinner { width: 12px; height: 12px; border: 2px solid rgba(255,255,255,0.4); border-top-color: #fff; border-radius: 50%; animation: spin 0.7s linear infinite; }
 
 /* ── Footer ─────────────────────────────────────────── */
-footer { text-align: center; padding: 2.5rem 1rem 2rem; border-top: 1px solid var(--border); }
-.footer-name { font-family: var(--font-d); font-size: 1.1rem; color: var(--text2); margin-bottom: 0.5rem; }
-.footer-contacts { display: flex; flex-direction: column; align-items: center; gap: 0.3rem; }
-.footer-link { display: inline-flex; align-items: center; gap: 0.4rem; font-size: var(--fs-xs); color: var(--text3); text-decoration: none; transition: color 0.2s; }
-.footer-link:hover { color: var(--pink); }
-.footer-link svg { width: 13px; height: 13px; stroke: currentColor; fill: none; stroke-width: 1.7; stroke-linecap: round; }
-.footer-copy { font-size: 0.67rem; color: var(--text3); margin-top: 1rem; opacity: 0.7; }
+footer { text-align: center; padding: 2rem 1rem 5rem; border-top: 1px solid var(--border); }
+.footer-icons { display: flex; align-items: center; justify-content: center; gap: 0.75rem; margin-bottom: 0.85rem; }
+.footer-icon-btn { display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; border: 1.5px solid var(--border); color: var(--text3); text-decoration: none; transition: all 0.2s; }
+.footer-icon-btn:hover { border-color: var(--pink); color: var(--pink); background: var(--pink-dim); }
+.footer-copy { font-size: 0.67rem; color: var(--text3); opacity: 0.7; }
+
+/* ── Floating WhatsApp ──────────────────────────────── */
+.wpp-float { position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 200; display: flex; align-items: center; gap: 0.55rem; background: #25D366; color: #fff; border-radius: 99px; padding: 0.8rem 1.3rem; font-family: var(--font-s); font-size: var(--fs-sm); font-weight: 700; text-decoration: none; box-shadow: 0 4px 20px rgba(37,211,102,0.45); transition: all 0.25s var(--ease); white-space: nowrap; }
+.wpp-float:hover { background: #1ebe5a; transform: scale(1.04); box-shadow: 0 6px 28px rgba(37,211,102,0.6); }
+@media (max-width: 400px) { .wpp-float span { display: none; } .wpp-float { padding: 0.85rem; border-radius: 50%; } }
 
 /* ── Responsive ─────────────────────────────────────── */
 @media (min-width: 600px) {

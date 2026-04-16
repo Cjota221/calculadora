@@ -13,7 +13,7 @@ export function Hero() {
         <h1 className="hero-h1">
           Pare de chutar<br />
           o preço e comece<br />
-          a <em>lucrar de verdade</em>
+          <em>lucrar de verdade</em>
         </h1>
 
         <p className="hero-sub">
