@@ -120,7 +120,7 @@ export function TabPrecificar({
           <input type="number" className="has-sfx" placeholder="Ex: 50" step="1" min="1" value={margin} onChange={e => setMargin(e.target.value)} />
           <span className="sfx">%</span>
         </div>
-        <div className="field-hint">Quanto você quer ganhar sobre o custo total</div>
+        <div className="field-hint">Quanto você quer ganhar sobre o preço de venda</div>
       </div>
 
       <button className="btn btn-primary" onClick={onCalcular}>

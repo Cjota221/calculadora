@@ -56,10 +56,11 @@ export function useCalculadora() {
     const m = parseFloat(margin) || 0
     if (c <= 0) { onToast('Informe o custo do produto'); return }
     if (m <= 0) { onToast('Informe a margem de lucro'); return }
+    if (m >= 100) { onToast('A margem de lucro deve ser menor que 100%'); return }
     const totalDesp = despesas.reduce((acc, r) => acc + (parseFloat(r.value) || 0), 0)
     const totalTaxaPct = taxas.reduce((acc, r) => acc + (parseFloat(r.value) || 0), 0)
     const base = c + f + totalDesp
-    let price = base * (1 + m / 100)
+    let price = base / (1 - m / 100)
     if (totalTaxaPct > 0) price = price / (1 - totalTaxaPct / 100)
     const taxaAmt = price * totalTaxaPct / 100
     const profit = price - base - taxaAmt

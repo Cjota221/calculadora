@@ -62,8 +62,8 @@ export function TabGuia() {
           </div>
           <h3>Margem de Lucro</h3>
         </div>
-        <p>Quanto você quer ganhar sobre o custo total. Esta calculadora usa o método markup:</p>
-        <div className="guide-formula">Preço = Custo Total × (1 + Margem% ÷ 100)</div>
+        <p>Quanto você quer ganhar sobre o preço de venda. Esta calculadora usa o método margem sobre preço de venda:</p>
+        <div className="guide-formula">Preço = Custo Total ÷ (1 − Margem% ÷ 100)</div>
         <ul>
           <li>Abaixo de 20% — margem muito fraca</li>
           <li>De 20% a 39% — razoável, pode melhorar</li>
