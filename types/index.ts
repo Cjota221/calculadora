@@ -19,6 +19,7 @@ export interface CalcResult {
   margemLabel: string
   margemDesc: string
   margemPct: number
+  markupDigitado?: number
 }
 
 export interface FreteResult {

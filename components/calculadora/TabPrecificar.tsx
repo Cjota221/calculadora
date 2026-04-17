@@ -120,7 +120,7 @@ export function TabPrecificar({
           <input type="number" className="has-sfx" placeholder="Ex: 50" step="1" min="1" value={margin} onChange={e => setMargin(e.target.value)} />
           <span className="sfx">%</span>
         </div>
-        <div className="field-hint">Quanto você quer ganhar sobre o preço de venda</div>
+        <div className="field-hint">Digite quanto quer ganhar — interpretamos automaticamente</div>
       </div>
 
       <button className="btn btn-primary" onClick={onCalcular}>
@@ -147,6 +147,11 @@ export function TabPrecificar({
               desc={result.margemDesc}
               pct={result.margemPct}
             />
+            {result.markupDigitado !== undefined && (
+              <div className="aviso-interpretacao">
+                Interpretamos que você quer ganhar <strong>{result.markupDigitado}%</strong> em cima do custo — isso equivale a <strong>{result.margin.toFixed(1)}%</strong> de margem sobre o preço de venda.
+              </div>
+            )}
           </div>
 
           <div className="field-row" style={{ marginTop: '0.75rem' }}>

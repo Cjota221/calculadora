@@ -62,9 +62,14 @@ export function TabGuia() {
           </div>
           <h3>Margem de Lucro</h3>
         </div>
-        <p>Quanto você quer ganhar sobre o preço de venda. Esta calculadora usa o método margem sobre preço de venda:</p>
-        <div className="guide-formula">Preço = Custo Total ÷ (1 − Margem% ÷ 100)</div>
+        <p>Pode digitar do jeito que você pensa:</p>
         <ul>
+          <li>Quer dobrar o preço? → Digite <strong>100%</strong></li>
+          <li>Quer ganhar metade do custo? → Digite <strong>50%</strong></li>
+          <li>Quer 30% do preço de venda? → Digite <strong>30%</strong></li>
+        </ul>
+        <p style={{ marginTop: '0.5rem' }}>A calculadora entende automaticamente e calcula certo pra você.</p>
+        <ul style={{ marginTop: '0.5rem' }}>
           <li>Abaixo de 20% — margem muito fraca</li>
           <li>De 20% a 39% — razoável, pode melhorar</li>
           <li>De 40% a 59% — boa margem</li>

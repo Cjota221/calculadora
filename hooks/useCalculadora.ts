@@ -56,16 +56,18 @@ export function useCalculadora() {
     const m = parseFloat(margin) || 0
     if (c <= 0) { onToast('Informe o custo do produto'); return }
     if (m <= 0) { onToast('Informe a margem de lucro'); return }
-    if (m >= 100) { onToast('A margem de lucro deve ser menor que 100%'); return }
+    const isMarkup = m > 70
+    const margemReal = isMarkup ? (m / 100) / (1 + m / 100) : m / 100
     const totalDesp = despesas.reduce((acc, r) => acc + (parseFloat(r.value) || 0), 0)
     const totalTaxaPct = taxas.reduce((acc, r) => acc + (parseFloat(r.value) || 0), 0)
     const base = c + f + totalDesp
-    let price = base / (1 - m / 100)
+    let price = base / (1 - margemReal)
     if (totalTaxaPct > 0) price = price / (1 - totalTaxaPct / 100)
     const taxaAmt = price * totalTaxaPct / 100
     const profit = price - base - taxaAmt
-    const mi = getMargemInfo(m)
-    setResult({ price, base, taxaAmt, profit, margin: m, taxaPct: totalTaxaPct, margemLevel: mi.level, margemLabel: mi.label, margemDesc: mi.desc, margemPct: mi.pct })
+    const margemRealPct = margemReal * 100
+    const mi = getMargemInfo(margemRealPct)
+    setResult({ price, base, taxaAmt, profit, margin: margemRealPct, taxaPct: totalTaxaPct, margemLevel: mi.level, margemLabel: mi.label, margemDesc: mi.desc, margemPct: mi.pct, markupDigitado: isMarkup ? m : undefined })
     setDiscount('')
     setPromoOpen(false)
   }
