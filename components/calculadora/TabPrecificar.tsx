@@ -191,6 +191,7 @@ export function TabPrecificar({
             onDiscountChange={setDiscount}
             basePrice={result.price}
             baseCost={result.base}
+            taxaPct={result.taxaPct}
           />
         </>
       )}

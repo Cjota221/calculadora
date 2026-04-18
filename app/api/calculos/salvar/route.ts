@@ -24,7 +24,10 @@ export async function POST(req: NextRequest) {
 
   if (error) {
     console.error('[salvar-calculo] erro:', error)
-    return NextResponse.json({ error: 'Erro ao salvar' }, { status: 500 })
+    return NextResponse.json(
+      { error: 'Erro ao salvar', detail: error.message, code: error.code },
+      { status: 500 }
+    )
   }
 
   return NextResponse.json({ success: true })

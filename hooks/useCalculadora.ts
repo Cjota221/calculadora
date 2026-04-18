@@ -92,11 +92,17 @@ export function useCalculadora() {
           data_venda: dataVenda || null,
         }),
       })
-      if (!res.ok) throw new Error('Erro ao salvar')
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}))
+        console.error('[salvar-calculo] erro:', data)
+        throw new Error(data.detail || data.error || 'Erro ao salvar')
+      }
       ga.salvarCalculo()
       onToast('Cálculo salvo com sucesso!')
-    } catch {
-      onToast('Erro ao salvar. Tente novamente.')
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : 'Erro desconhecido'
+      console.error('[salvar-calculo]', err)
+      onToast(`Erro: ${msg}`)
     } finally {
       setSalvando(false)
     }

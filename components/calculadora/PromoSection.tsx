@@ -7,12 +7,17 @@ interface PromoSectionProps {
   onDiscountChange: (val: string) => void
   basePrice: number
   baseCost: number
+  taxaPct: number
 }
 
-export function PromoSection({ open, onToggle, discount, onDiscountChange, basePrice, baseCost }: PromoSectionProps) {
+export function PromoSection({ open, onToggle, discount, onDiscountChange, basePrice, baseCost, taxaPct }: PromoSectionProps) {
   const d = parseFloat(discount) || 0
   const promoPrice = d > 0 ? basePrice * (1 - d / 100) : null
-  const promoProfit = promoPrice !== null ? promoPrice - baseCost : null
+  const promoTaxaAmt = promoPrice !== null ? promoPrice * taxaPct / 100 : 0
+  const promoProfit = promoPrice !== null ? promoPrice - baseCost - promoTaxaAmt : null
+  const descontoMaximo = taxaPct < 100
+    ? (100 * (1 - baseCost / (basePrice * (1 - taxaPct / 100)))).toFixed(1)
+    : '0'
 
   return (
     <>
@@ -45,7 +50,12 @@ export function PromoSection({ open, onToggle, discount, onDiscountChange, baseP
               <div className="res-promo-meta">{discount}% de desconto sobre {fmt(basePrice)}</div>
               {promoProfit >= 0
                 ? <div className="res-promo-profit">Você ainda lucra <strong>{fmt(promoProfit)}</strong> por unidade</div>
-                : <div className="res-promo-warn">Atenção: prejuízo de <strong>{fmt(Math.abs(promoProfit))}</strong> por unidade</div>
+                : (
+                  <div className="res-promo-warn">
+                    Atenção: prejuízo de <strong>{fmt(Math.abs(promoProfit))}</strong> por unidade.
+                    Desconto máximo seguro: <strong>{descontoMaximo}%</strong>
+                  </div>
+                )
               }
             </div>
           )}
