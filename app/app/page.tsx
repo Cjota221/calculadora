@@ -9,6 +9,7 @@ import { TabPrecificar } from '@/components/calculadora/TabPrecificar'
 import { TabFrete } from '@/components/calculadora/TabFrete'
 import { TabEquilibrio } from '@/components/calculadora/TabEquilibrio'
 import { TabGuia } from '@/components/calculadora/TabGuia'
+import { TabSalvos } from '@/components/calculadora/TabSalvos'
 import { Toast } from '@/components/ui/Toast'
 import { UserAvatar } from '@/components/ui/UserAvatar'
 import { Footer } from '@/components/layout/Footer'
@@ -108,6 +109,10 @@ export default function AppPage() {
 
         <div className={`tab-panel${tab === 'guia' ? ' active' : ''}`}>
           <TabGuia />
+        </div>
+
+        <div className={`tab-panel${tab === 'salvos' ? ' active' : ''}`}>
+          {user && <TabSalvos userId={user.id} />}
         </div>
       </div>
 

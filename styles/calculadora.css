@@ -6,7 +6,7 @@
 .app-hero-sub { font-size: var(--fs-sm); color: var(--text3); font-weight: 400; }
 
 /* ── Tab Nav ────────────────────────────────────────── */
-.tabs-nav { display: grid; grid-template-columns: repeat(4, 1fr); background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 4px; gap: 3px; margin-bottom: 1.5rem; box-shadow: var(--shadow); }
+.tabs-nav { display: grid; grid-template-columns: repeat(5, 1fr); background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 4px; gap: 3px; margin-bottom: 1.5rem; box-shadow: var(--shadow); }
 .tab-btn { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 0.65rem 0.25rem; border: 1px solid transparent; background: transparent; border-radius: var(--radius-xs); font-family: var(--font-s); font-size: var(--fs-xs); font-weight: 600; color: var(--text3); cursor: pointer; transition: all 0.2s var(--ease); text-transform: uppercase; letter-spacing: 0.04em; min-height: 56px; }
 .tab-btn svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; transition: stroke 0.2s; }
 .tab-btn:hover { color: var(--text2); background: var(--bg3); }
@@ -215,6 +215,20 @@ footer { text-align: center; padding: 2rem 1rem 5rem; border-top: 1px solid var(
 .wpp-float { position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 200; display: flex; align-items: center; gap: 0.55rem; background: #25D366; color: #fff; border-radius: 99px; padding: 0.8rem 1.3rem; font-family: var(--font-s); font-size: var(--fs-sm); font-weight: 700; text-decoration: none; box-shadow: 0 4px 20px rgba(37,211,102,0.45); transition: all 0.25s var(--ease); white-space: nowrap; }
 .wpp-float:hover { background: #1ebe5a; transform: scale(1.04); box-shadow: 0 6px 28px rgba(37,211,102,0.6); }
 @media (max-width: 400px) { .wpp-float span { display: none; } .wpp-float { padding: 0.85rem; border-radius: 50%; } }
+
+/* ── Salvos ─────────────────────────────────────────── */
+.salvos-list { display: flex; flex-direction: column; gap: 0.75rem; }
+.salvo-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.1rem 1.25rem; box-shadow: var(--shadow); }
+.salvo-nome { font-size: var(--fs-sm); font-weight: 700; color: var(--text); margin-bottom: 0.25rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.salvo-preco { font-family: var(--font-d); font-size: 1.75rem; font-weight: 800; color: var(--pink); line-height: 1.1; margin-bottom: 0.5rem; }
+.salvo-meta { display: flex; gap: 1rem; flex-wrap: wrap; font-size: var(--fs-xs); color: var(--text3); margin-bottom: 0.4rem; }
+.salvo-meta strong { color: var(--text2); font-weight: 600; }
+.salvo-data { font-size: var(--fs-xs); color: var(--text3); }
+.salvos-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.75rem; padding: 3rem 1rem; text-align: center; color: var(--text3); }
+.salvos-empty svg { width: 40px; height: 40px; stroke: var(--border2); fill: none; stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; }
+.salvos-empty p { font-size: var(--fs-base); font-weight: 600; color: var(--text2); margin: 0; }
+.salvos-empty span { font-size: var(--fs-sm); }
+.salvos-error { color: var(--red); }
 
 /* ── Responsive ─────────────────────────────────────── */
 @media (min-width: 600px) {
