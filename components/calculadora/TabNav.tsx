@@ -36,18 +36,6 @@ const tabs: TabDef[] = [
     ),
   },
   {
-    id: 'equilibrio',
-    label: 'Equilíbrio',
-    icon: (
-      <>
-        <line x1="12" y1="3" x2="12" y2="21" />
-        <path d="M3 9l9-7 9 7" />
-        <path d="M5 12H1l2 5h4l2-5H5z" />
-        <path d="M19 12h-4l2 5h4l2-5h-4z" />
-      </>
-    ),
-  },
-  {
     id: 'guia',
     label: 'Guia',
     icon: (

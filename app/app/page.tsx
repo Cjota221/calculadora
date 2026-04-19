@@ -3,11 +3,9 @@ import { useState } from 'react'
 import { useAuth } from '@/hooks/useAuth'
 import { useCalculadora } from '@/hooks/useCalculadora'
 import { useFreteCalc } from '@/hooks/useFreteCalc'
-import { useEquilibrio } from '@/hooks/useEquilibrio'
 import { TabNav } from '@/components/calculadora/TabNav'
 import { TabPrecificar } from '@/components/calculadora/TabPrecificar'
 import { TabFrete } from '@/components/calculadora/TabFrete'
-import { TabEquilibrio } from '@/components/calculadora/TabEquilibrio'
 import { TabGuia } from '@/components/calculadora/TabGuia'
 import { TabSalvos } from '@/components/calculadora/TabSalvos'
 import { Toast } from '@/components/ui/Toast'
@@ -24,8 +22,6 @@ export default function AppPage() {
 
   const calc = useCalculadora()
   const frete = useFreteCalc()
-  const eq = useEquilibrio()
-
   function showToast(msg: string) {
     setToast(msg)
     setToastVisible(true)
@@ -97,17 +93,7 @@ export default function AppPage() {
           />
         </div>
 
-        <div className={`tab-panel${tab === 'equilibrio' ? ' active' : ''}`}>
-          <TabEquilibrio
-            fixedCosts={eq.fixedCosts} setFixedCosts={eq.setFixedCosts}
-            eqSell={eq.eqSell} setEqSell={eq.setEqSell}
-            eqCost={eq.eqCost} setEqCost={eq.setEqCost}
-            result={eq.result}
-            onCalcular={() => eq.calcular(showToast)}
-          />
-        </div>
-
-        <div className={`tab-panel${tab === 'guia' ? ' active' : ''}`}>
+<div className={`tab-panel${tab === 'guia' ? ' active' : ''}`}>
           <TabGuia />
         </div>
 

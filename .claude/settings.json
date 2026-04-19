@@ -4,7 +4,14 @@
       "Bash(npm install *)",
       "Bash(ls c:/Users/carol/precifique/app/icon* c:/Users/carol/precifique/app/apple-icon*)",
       "Bash(sed -i 's|href=\"https://payment-link-v3.ton.com.br/pl_64AYg5QLn8WVyxBcXhwB2dmROroakyzb\"|href=\"https://calculadoraprecifique.com/comprar\"|g' c:/Users/carol/precifique/public/venda.html)",
-      "Bash(sed -i 's|href=\"#comprar\"|href=\"https://calculadoraprecifique.com/comprar\"|g' c:/Users/carol/precifique/public/venda.html)"
+      "Bash(sed -i 's|href=\"#comprar\"|href=\"https://calculadoraprecifique.com/comprar\"|g' c:/Users/carol/precifique/public/venda.html)",
+      "Bash(awk -F'=' '{print $1, substr\\($2,1,10\\)\"...\"}')"
+    ],
+    "additionalDirectories": [
+      "C:\\Users\\carol\\precifique-automations\\src\\types",
+      "C:\\Users\\carol\\precifique-automations\\src\\services",
+      "C:\\Users\\carol\\precifique-automations\\src\\routes",
+      "C:\\Users\\carol\\precifique-automations\\src"
     ]
   }
 }

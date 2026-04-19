@@ -4,7 +4,7 @@ export interface DynamicRow {
   value: string
 }
 
-export type Tab = 'precificacao' | 'frete' | 'equilibrio' | 'guia' | 'salvos'
+export type Tab = 'precificacao' | 'frete' | 'guia' | 'salvos'
 
 export type MargemLevel = 'fraca' | 'ok' | 'boa' | 'otima'
 
