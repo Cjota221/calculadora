@@ -4,7 +4,7 @@ import { randomUUID } from 'crypto'
 
 export async function POST(req: NextRequest) {
   try {
-    const { nome, email, telefone, nicho, senha } = await req.json()
+    const { nome, email, telefone, nicho, senha, afiliado_ref } = await req.json()
 
     if (!nome || !email || !senha) {
       return NextResponse.json({ error: 'Campos obrigatórios: nome, email, senha.' }, { status: 400 })
@@ -89,6 +89,7 @@ export async function POST(req: NextRequest) {
           nicho: nicho?.trim() || null,
           status: 'pendente',
           mp_external_ref: externalRef,
+          afiliado_ref: afiliado_ref || null,
         })
         if (insertErr) {
           console.error('Insert recovery error:', insertErr.message)
@@ -114,6 +115,7 @@ export async function POST(req: NextRequest) {
         nicho: nicho?.trim() || null,
         status: 'pendente',
         mp_external_ref: externalRef,
+        afiliado_ref: afiliado_ref || null,
       })
 
     if (dbError) {

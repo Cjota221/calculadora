@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
     }
 
     const baseBody: Record<string, unknown> = {
-      transaction_amount: 24.99,
+      transaction_amount: 37.90,
       description: 'Precifique — Acesso Vitalício',
       external_reference: externalRef,
       notification_url: `${process.env.NEXT_PUBLIC_URL}/api/webhook/mercadopago`,

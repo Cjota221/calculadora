@@ -140,7 +140,14 @@ export default function ComprarPage() {
       const resUser = await fetch('/api/checkout/criar-usuario', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nome, email, telefone, nicho, senha }),
+        body: JSON.stringify({ nome, email, telefone, nicho, senha, afiliado_ref: (() => {
+          try {
+            const ref = localStorage.getItem('precifique_ref')
+            const ts = localStorage.getItem('precifique_ref_ts')
+            if (ref && ts && Date.now() - parseInt(ts) < 7 * 24 * 60 * 60 * 1000) return ref
+          } catch { /* noop */ }
+          return null
+        })() }),
       })
       const dataUser = await resUser.json()
       if (!resUser.ok) { setErro(dataUser.error || 'Erro ao criar conta.'); setLoading(false); return }

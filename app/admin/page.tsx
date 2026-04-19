@@ -44,6 +44,7 @@ export default function Admin() {
   const [users, setUsers] = useState<PrecifiqueUser[]>([])
   const [compradores, setCompradores] = useState<Comprador[]>([])
   const [leads, setLeads] = useState<{ id: string; nome: string; telefone: string; origem: string; created_at: string }[]>([])
+  const [afiliados, setAfiliados] = useState<{ id: string; nome: string; email: string; codigo_afiliado: string; chave_pix: string; tipo_pix: string; total_vendas: number; total_ganho: number; a_pagar: number; ativo: boolean }[]>([])
   const [stats, setStats] = useState({ total: 0, ativos: 0, pendentes: 0, faturamento: 0, novosHoje: 0, novosSemana: 0, novosMes: 0, faturamentoMes: 0 })
   const [toast, setToast] = useState('')
   const [toastVisible, setToastVisible] = useState(false)
@@ -77,9 +78,15 @@ export default function Admin() {
     setLeads(Array.isArray(data) ? data : [])
   }, [])
 
+  const loadAfiliados = useCallback(async () => {
+    const res = await fetch('/api/admin/afiliados')
+    const data = await res.json()
+    setAfiliados(Array.isArray(data) ? data : [])
+  }, [])
+
   useEffect(() => {
-    if (authed) { loadUsers(); loadCompradores(); loadStats(); loadLeads() }
-  }, [authed, loadUsers, loadCompradores, loadStats, loadLeads])
+    if (authed) { loadUsers(); loadCompradores(); loadStats(); loadLeads(); loadAfiliados() }
+  }, [authed, loadUsers, loadCompradores, loadStats, loadLeads, loadAfiliados])
 
   async function toggleUser(id: string, ativo: boolean) {
     await sbFetch(`precifique_users?id=eq.${id}`, 'PATCH', { ativo })
@@ -176,6 +183,47 @@ export default function Admin() {
 
         <h2 className="section-title" style={{ marginTop: '2.5rem' }}>Compradores (checkout automático)</h2>
         <CompradoresTable compradores={compradores} onRefresh={loadCompradores} />
+
+        <h2 className="section-title" style={{ marginTop: '2.5rem' }}>Afiliadas</h2>
+        <div className="table-wrap" style={{ marginBottom: '2rem' }}>
+          <div className="table-head">
+            <h3>Afiliadas cadastradas ({afiliados.length})</h3>
+            <button className="btn btn-sm btn-refresh" onClick={loadAfiliados}>↻ Atualizar</button>
+          </div>
+          {afiliados.length === 0 ? (
+            <div className="empty-state">Nenhuma afiliada cadastrada ainda.</div>
+          ) : (
+            <table>
+              <thead><tr>
+                <th>Nome</th><th>Código</th><th>Chave PIX</th><th>Vendas</th><th>A pagar</th><th>Total ganho</th><th>Ação</th>
+              </tr></thead>
+              <tbody>
+                {afiliados.map(a => (
+                  <tr key={a.id}>
+                    <td><strong>{a.nome}</strong><br /><span style={{ fontSize: '0.72rem', color: 'var(--text3)' }}>{a.email}</span></td>
+                    <td><code style={{ fontSize: '0.78rem', background: 'var(--bg3)', padding: '2px 6px', borderRadius: '4px' }}>{a.codigo_afiliado}</code></td>
+                    <td><span style={{ fontSize: '0.78rem' }}>{a.tipo_pix.toUpperCase()}: {a.chave_pix}</span></td>
+                    <td>{a.total_vendas}</td>
+                    <td><strong style={{ color: a.a_pagar > 0 ? 'var(--orange)' : 'var(--text3)' }}>
+                      {a.a_pagar.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                    </strong></td>
+                    <td>{a.total_ganho.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
+                    <td>
+                      {a.a_pagar > 0 && (
+                        <button className="btn btn-sm btn-success" onClick={async () => {
+                          if (!confirm(`Confirma PIX de ${a.a_pagar.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })} para ${a.nome}?`)) return
+                          await fetch('/api/admin/afiliados/pagar', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ afiliado_id: a.id }) })
+                          showToast('Comissões marcadas como pagas!')
+                          loadAfiliados()
+                        }}>✓ Marcar pago</button>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
 
         <h2 className="section-title" style={{ marginTop: '2.5rem' }}>Acessos manuais (legado)</h2>
         <UsersTable users={users} onToggle={toggleUser} onRefresh={loadUsers} />

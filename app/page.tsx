@@ -7,8 +7,11 @@ import { SocialProof } from '@/components/landing/SocialProof'
 import { Features } from '@/components/landing/Features'
 import { AppPreview } from '@/components/landing/AppPreview'
 import { HowItWorks } from '@/components/landing/HowItWorks'
+import { AfiliadosSection } from '@/components/landing/AfiliadosSection'
 import { CtaBottom } from '@/components/landing/CtaBottom'
 import { Footer } from '@/components/layout/Footer'
+import { PopupLoader } from '@/components/landing/PopupLoader'
+import { RefCapture } from '@/components/landing/RefCapture'
 
 export const metadata: Metadata = {
   title: 'Precifique — Calculadora de Precificação Profissional',
@@ -33,7 +36,7 @@ const jsonLd = {
   url: 'https://calculadoraprecifique.com',
   offers: {
     '@type': 'Offer',
-    price: '24.99',
+    price: '37.90',
     priceCurrency: 'BRL',
     availability: 'https://schema.org/InStock',
     priceValidUntil: '2026-12-31',
@@ -52,6 +55,8 @@ export default function Landing() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
+      <RefCapture />
+      <PopupLoader />
       <OfertaBanner />
       <Navbar />
       <Hero />
@@ -59,8 +64,9 @@ export default function Landing() {
       <Features />
       <AppPreview />
       <HowItWorks />
+      <AfiliadosSection />
       <CtaBottom />
-      <Footer />
+      <Footer showWppFloat />
     </>
   )
 }

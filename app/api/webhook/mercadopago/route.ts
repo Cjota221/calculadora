@@ -36,7 +36,7 @@ export async function POST(req: NextRequest) {
     // REGRA 2: Buscar usuária por external_ref OU payment_id
     const { data: usuario } = await supabaseAdmin
       .from('usuarios_precifique')
-      .select('id, auth_user_id, status, nome, email, telefone')
+      .select('id, auth_user_id, status, nome, email, telefone, afiliado_ref')
       .or(`mp_external_ref.eq.${externalRef},mp_payment_id.eq.${paymentId}`)
       .maybeSingle()
 
@@ -71,6 +71,36 @@ export async function POST(req: NextRequest) {
     }
 
     console.log('✅ Conta ativada:', usuario.id, 'payment:', paymentId)
+
+    // COMISSÃO: registrar se veio de afiliado
+    if (usuario.afiliado_ref) {
+      try {
+        const { data: afiliado } = await supabaseAdmin
+          .from('afiliados')
+          .select('id')
+          .eq('codigo_afiliado', usuario.afiliado_ref)
+          .eq('ativo', true)
+          .maybeSingle()
+
+        if (afiliado) {
+          await supabaseAdmin.from('comissoes').insert({
+            afiliado_id: afiliado.id,
+            comprador_email: usuario.email,
+            valor_venda: 37.90,
+            valor_comissao: 12.90,
+            mp_payment_id: paymentId,
+            status: 'pendente',
+          })
+          await supabaseAdmin.rpc('incrementar_totais_afiliado', {
+            p_afiliado_id: afiliado.id,
+            p_valor: 12.90,
+          })
+          console.log('✅ Comissão registrada para afiliado:', usuario.afiliado_ref)
+        }
+      } catch (err) {
+        console.error('Erro ao registrar comissão:', err)
+      }
+    }
 
     // Disparar pagamento_confirmado no n8n (fire-and-forget)
     if (usuario.telefone) {
