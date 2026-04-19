@@ -2,7 +2,7 @@
 .lp-nav { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.5rem; background: rgba(13,4,40,0.92); backdrop-filter: blur(16px); border-bottom: 1px solid rgba(255,255,255,0.08); position: sticky; top: 0; z-index: 100; }
 .nav-brand { font-family: var(--font-d); font-size: 1.4rem; color: #fff; }
 .nav-brand span { color: var(--pink2); }
-.nav-login { font-size: var(--fs-xs); font-weight: 600; color: rgba(255,255,255,0.9); text-decoration: none; padding: 0.5rem 1.1rem; border: 1.5px solid rgba(255,255,255,0.25); border-radius: 99px; transition: all 0.2s; }
+.nav-login { font-size: var(--fs-xs); font-weight: 600; color: rgba(255,255,255,0.9); text-decoration: none; padding: 0.5rem 1.1rem; border: 1.5px solid rgba(255,255,255,0.25); border-radius: 99px; transition: all 0.2s; white-space: nowrap; }
 .nav-login:hover { background: rgba(255,255,255,0.1); }
 .nav-login:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
 .nav-right { display: flex; align-items: center; gap: 0.6rem; }
