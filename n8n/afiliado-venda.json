@@ -1,0 +1,152 @@
+{
+  "name": "Precifique — Afiliada Venda",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "afiliado-venda",
+        "responseMode": "onReceived",
+        "responseData": "firstEntryJson",
+        "options": {}
+      },
+      "id": "webhook-venda",
+      "name": "Webhook Venda",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [240, 300],
+      "webhookId": "afiliado-venda"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.body.whatsapp }}",
+              "operation": "isNotEmpty"
+            },
+            {
+              "value1": "={{ $json.body.nome }}",
+              "operation": "isNotEmpty"
+            },
+            {
+              "value1": "={{ $json.body.valor_comissao }}",
+              "operation": "isNotEmpty"
+            }
+          ]
+        }
+      },
+      "id": "validar-campos-venda",
+      "name": "Validar Campos",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const raw = $input.first().json.body.whatsapp || '';\nconst digits = raw.replace(/\\D/g, '');\nlet number = digits;\nif (!number.startsWith('55')) {\n  number = '55' + number;\n}\nconst body = $input.first().json.body;\nconst valorFmt = String(body.valor_comissao).replace('.', ',');\nreturn [{ json: { ...body, whatsapp_fmt: number, valor_fmt: valorFmt } }];"
+      },
+      "id": "formatar-telefone-venda",
+      "name": "Formatar Telefone",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [680, 200]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.EVOLUTION_URL }}/message/sendText/{{ $env.EVOLUTION_INSTANCE }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "apikey", "value": "={{ $env.EVOLUTION_API_KEY }}" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"number\": \"{{ $json.whatsapp_fmt }}\",\n  \"text\": \"🎉 {{ $json.nome }}, você fez uma venda!\\n\\nUma pessoa comprou o Precifique pelo seu link e você ganhou *R$ {{ $json.valor_fmt }}* de comissão! 💜\\n\\nAcompanhe seus ganhos no painel:\\n{{ $json.link_painel }}\\n\\nContinue divulgando! Cada indicação vale R$ 12,90 no seu bolso. 🚀\"\n}",
+        "options": {
+          "response": {
+            "response": {
+              "neverError": true
+            }
+          }
+        }
+      },
+      "id": "whatsapp-venda",
+      "name": "WhatsApp Comissão",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [900, 200]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.statusCode }}",
+              "operation": "smallerEqual",
+              "value2": 299
+            }
+          ]
+        }
+      },
+      "id": "checar-resposta-venda",
+      "name": "Enviou OK?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [1120, 200]
+    },
+    {
+      "parameters": {
+        "jsCode": "console.error('[afiliado-venda] Falha ao enviar WhatsApp:', JSON.stringify($input.first().json));\nreturn [];"
+      },
+      "id": "log-erro-venda",
+      "name": "Log Erro Envio",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1340, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const item = $input.first().json;\nconsole.error('[afiliado-venda] Campos inválidos:', JSON.stringify(item.body));\nreturn [];"
+      },
+      "id": "log-campos-invalidos-venda",
+      "name": "Log Campos Inválidos",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [680, 400]
+    }
+  ],
+  "connections": {
+    "Webhook Venda": {
+      "main": [
+        [{ "node": "Validar Campos", "type": "main", "index": 0 }]
+      ]
+    },
+    "Validar Campos": {
+      "main": [
+        [{ "node": "Formatar Telefone", "type": "main", "index": 0 }],
+        [{ "node": "Log Campos Inválidos", "type": "main", "index": 0 }]
+      ]
+    },
+    "Formatar Telefone": {
+      "main": [
+        [{ "node": "WhatsApp Comissão", "type": "main", "index": 0 }]
+      ]
+    },
+    "WhatsApp Comissão": {
+      "main": [
+        [{ "node": "Enviou OK?", "type": "main", "index": 0 }]
+      ]
+    },
+    "Enviou OK?": {
+      "main": [
+        [],
+        [{ "node": "Log Erro Envio", "type": "main", "index": 0 }]
+      ]
+    }
+  },
+  "settings": { "executionOrder": "v1" }
+}
