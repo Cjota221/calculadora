@@ -4,7 +4,6 @@ import { DespesaRow } from './DespesaRow'
 import { TaxaRow } from './TaxaRow'
 import { MargemIndicator } from './MargemIndicator'
 import { PromoSection } from './PromoSection'
-import { PrecoPraticado } from './PrecoPraticado'
 import { PrecoEditavel } from './PrecoEditavel'
 
 interface TabPrecificarProps {
@@ -153,7 +152,6 @@ export function TabPrecificar({
                 Interpretamos que você quer ganhar <strong>{result.markupDigitado}%</strong> em cima do custo — isso equivale a <strong>{result.margin.toFixed(1)}%</strong> de margem sobre o preço de venda.
               </div>
             )}
-            <PrecoPraticado result={result} />
           </div>
 
           <div className="field-row" style={{ marginTop: '0.75rem' }}>
