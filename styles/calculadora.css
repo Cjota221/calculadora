@@ -216,6 +216,34 @@ footer { text-align: center; padding: 2rem 1rem 5rem; border-top: 1px solid var(
 .wpp-float:hover { background: #1ebe5a; transform: scale(1.04); box-shadow: 0 6px 28px rgba(37,211,102,0.6); }
 @media (max-width: 400px) { .wpp-float span { display: none; } .wpp-float { padding: 0.85rem; border-radius: 50%; } }
 
+/* ── Preço Praticado ─────────────────────────────────── */
+.pp-wrapper { margin-top: 1rem; padding-top: 1rem; border-top: 1px dashed rgba(124,58,237,0.25); }
+.pp-label { display: flex; flex-direction: column; gap: 2px; margin-bottom: 0.5rem; }
+.pp-label > span:first-child { font-size: var(--fs-sm); font-weight: 600; color: var(--pink); }
+.pp-hint { font-size: var(--fs-xs); color: var(--text3); }
+.pp-input-row { display: flex; align-items: center; gap: 0.5rem; background: var(--bg); border: 1.5px solid rgba(124,58,237,0.35); border-radius: var(--radius); padding: 0.6rem 0.9rem; transition: border-color 0.2s; }
+.pp-input-row:focus-within { border-color: var(--pink); }
+.pp-prefix { font-weight: 700; color: var(--pink); font-size: var(--fs-sm); }
+.pp-input { border: none; outline: none; background: transparent; font-size: var(--fs-base); font-weight: 700; color: var(--text); width: 100%; font-family: var(--font-d); }
+.pp-input::-webkit-inner-spin-button, .pp-input::-webkit-outer-spin-button { -webkit-appearance: none; }
+.pp-comparacao { display: flex; align-items: flex-start; gap: 0.6rem; margin-top: 0.75rem; padding: 0.75rem 0.9rem; border-radius: var(--radius); font-size: var(--fs-xs); }
+.pp-icon { font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
+.pp-texto { display: flex; flex-direction: column; gap: 2px; }
+.pp-linha1 { font-weight: 700; margin: 0; }
+.pp-linha2 { margin: 0; }
+.pp-prejuizo { background: #fff0f0; border: 1px solid #fecaca; }
+.pp-prejuizo .pp-linha1 { color: #7f1d1d; }
+.pp-prejuizo .pp-linha2 { color: #b91c1c; }
+.pp-abaixo { background: #fff7ed; border: 1px solid #fed7aa; }
+.pp-abaixo .pp-linha1 { color: #92400e; }
+.pp-abaixo .pp-linha2 { color: #b45309; }
+.pp-limite { background: #fefce8; border: 1px solid #fde68a; }
+.pp-limite .pp-linha1 { color: #713f12; }
+.pp-limite .pp-linha2 { color: #92400e; }
+.pp-otimo { background: #f0fdf4; border: 1px solid #bbf7d0; }
+.pp-otimo .pp-linha1 { color: #14532d; }
+.pp-otimo .pp-linha2 { color: #166534; }
+
 /* ── Salvos ─────────────────────────────────────────── */
 .salvos-list { display: flex; flex-direction: column; gap: 0.75rem; }
 .salvo-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.1rem 1.25rem; box-shadow: var(--shadow); }
