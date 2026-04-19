@@ -40,6 +40,17 @@ export async function POST(req: NextRequest) {
 
     if (error) return NextResponse.json({ error: error.message }, { status: 500 })
 
+    // Fase 8a: notificar n8n (fire-and-forget)
+    if (process.env.N8N_URL) {
+      const linkAfiliado = `${process.env.NEXT_PUBLIC_URL}?ref=${data.codigo_afiliado}`
+      const linkPainel = `${process.env.NEXT_PUBLIC_URL}/afiliados/painel`
+      fetch(`${process.env.N8N_URL}/webhook/afiliado-cadastro`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nome: data.nome, whatsapp, codigo_afiliado: data.codigo_afiliado, link_afiliado: linkAfiliado, link_painel: linkPainel }),
+      }).catch(() => {})
+    }
+
     return NextResponse.json({ afiliado: data })
   } catch {
     return NextResponse.json({ error: 'Erro interno.' }, { status: 500 })

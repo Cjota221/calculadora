@@ -5,6 +5,9 @@
 .nav-login { font-size: var(--fs-xs); font-weight: 600; color: rgba(255,255,255,0.9); text-decoration: none; padding: 0.5rem 1.1rem; border: 1.5px solid rgba(255,255,255,0.25); border-radius: 99px; transition: all 0.2s; }
 .nav-login:hover { background: rgba(255,255,255,0.1); }
 .nav-login:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+.nav-right { display: flex; align-items: center; gap: 0.6rem; }
+.nav-afiliado { font-size: var(--fs-xs); font-weight: 700; color: #c4b5fd; text-decoration: none; padding: 0.5rem 1.1rem; background: rgba(124,58,237,0.18); border: 1.5px solid rgba(196,181,253,0.35); border-radius: 99px; transition: all 0.2s; white-space: nowrap; }
+.nav-afiliado:hover { background: rgba(124,58,237,0.35); border-color: rgba(196,181,253,0.6); color: #fff; }
 
 /* ── Hero ───────────────────────────────────────────── */
 .lp-hero { position: relative; overflow: hidden; padding: 4.5rem 1.5rem 5rem; text-align: center; background: linear-gradient(135deg, #0D0428 0%, #2A0A70 60%, #7C3AED 100%); border-bottom: none; }

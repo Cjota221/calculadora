@@ -77,7 +77,7 @@ export async function POST(req: NextRequest) {
       try {
         const { data: afiliado } = await supabaseAdmin
           .from('afiliados')
-          .select('id')
+          .select('id, nome, whatsapp')
           .eq('codigo_afiliado', usuario.afiliado_ref)
           .eq('ativo', true)
           .maybeSingle()
@@ -96,6 +96,32 @@ export async function POST(req: NextRequest) {
             p_valor: 12.90,
           })
           console.log('✅ Comissão registrada para afiliado:', usuario.afiliado_ref)
+
+          // Fase 8b: notificar afiliado via n8n (fire-and-forget)
+          if (process.env.N8N_URL && afiliado.nome && afiliado.whatsapp) {
+            fetch(`${process.env.N8N_URL}/webhook/afiliado-venda`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                nome: afiliado.nome,
+                whatsapp: afiliado.whatsapp,
+                valor_comissao: '12,90',
+                link_painel: `${process.env.NEXT_PUBLIC_URL}/afiliados/painel`,
+              }),
+            }).catch(() => {})
+          }
+
+          // Fase 9b: GA4 Measurement Protocol
+          if (process.env.GA4_API_SECRET) {
+            fetch(`https://www.google-analytics.com/mp/collect?measurement_id=G-5J3BJMJNKN&api_secret=${process.env.GA4_API_SECRET}`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                client_id: afiliado.id,
+                events: [{ name: 'venda_afiliado', params: { afiliado_ref: usuario.afiliado_ref, valor_comissao: 12.90, currency: 'BRL' } }],
+              }),
+            }).catch(() => {})
+          }
         }
       } catch (err) {
         console.error('Erro ao registrar comissão:', err)
