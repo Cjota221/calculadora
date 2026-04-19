@@ -6,6 +6,7 @@ interface CalcSalvo {
   id: string
   nome: string | null
   custo: number
+  frete: number
   margem: number
   preco_venda: number
   lucro: number
@@ -20,11 +21,25 @@ interface TabSalvosProps {
 interface EditState {
   id: string
   nome: string
+  frete: number
   custo: string
   margem: string
   preco_venda: string
   lucro: string
   data_venda: string
+}
+
+function recalcular(custo: string, margem: string, frete: number) {
+  const c = parseFloat(custo) || 0
+  const m = parseFloat(margem) || 0
+  const base = c + frete
+  if (m <= 0 || m >= 100) return { preco_venda: '', lucro: '' }
+  const preco = base / (1 - m / 100)
+  const lucro = preco - base
+  return {
+    preco_venda: preco.toFixed(2),
+    lucro: lucro.toFixed(2),
+  }
 }
 
 export function TabSalvos({ userId }: TabSalvosProps) {
@@ -50,11 +65,28 @@ export function TabSalvos({ userId }: TabSalvosProps) {
     setEditing({
       id: item.id,
       nome: item.nome || '',
+      frete: item.frete || 0,
       custo: item.custo.toString(),
       margem: item.margem.toString(),
       preco_venda: item.preco_venda.toString(),
       lucro: item.lucro.toString(),
       data_venda: item.data_venda || '',
+    })
+  }
+
+  function handleEditCusto(v: string) {
+    setEditing(prev => {
+      if (!prev) return prev
+      const calc = recalcular(v, prev.margem, prev.frete)
+      return { ...prev, custo: v, ...calc }
+    })
+  }
+
+  function handleEditMargem(v: string) {
+    setEditing(prev => {
+      if (!prev) return prev
+      const calc = recalcular(prev.custo, v, prev.frete)
+      return { ...prev, margem: v, ...calc }
     })
   }
 
@@ -190,7 +222,7 @@ export function TabSalvos({ userId }: TabSalvosProps) {
                   <input
                     type="number"
                     value={editing.custo}
-                    onChange={e => setEditing(prev => prev && { ...prev, custo: e.target.value })}
+                    onChange={e => handleEditCusto(e.target.value)}
                     min="0" step="0.01"
                   />
                 </label>
@@ -199,7 +231,7 @@ export function TabSalvos({ userId }: TabSalvosProps) {
                   <input
                     type="number"
                     value={editing.margem}
-                    onChange={e => setEditing(prev => prev && { ...prev, margem: e.target.value })}
+                    onChange={e => handleEditMargem(e.target.value)}
                     min="0" step="0.1"
                   />
                 </label>
