@@ -1,10 +1,13 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 
 function gerarCodigo(nome: string) {
-  return nome.toLowerCase().replace(/\s+/g, '').replace(/[^a-z0-9]/g, '').slice(0, 20)
+  const primeiroNome = nome.trim().split(/\s+/)[0] || ''
+  return primeiroNome.toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 20)
 }
+
+type CodigoStatus = 'idle' | 'checking' | 'available' | 'taken'
 
 export default function CadastroAfiliado() {
   const router = useRouter()
@@ -15,18 +18,75 @@ export default function CadastroAfiliado() {
   const [tipoPix, setTipoPix] = useState('cpf')
   const [chavePix, setChavePix] = useState('')
   const [codigo, setCodigo] = useState('')
+  const [codigoStatus, setCodigoStatus] = useState<CodigoStatus>('idle')
+  const [codigoSugestao, setCodigoSugestao] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const [erro, setErro] = useState('')
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const codigoManualRef = useRef(false)
+
+  function verificarCodigo(cod: string) {
+    if (debounceRef.current) clearTimeout(debounceRef.current)
+    if (cod.length < 3) { setCodigoStatus('idle'); setCodigoSugestao(null); return }
+    setCodigoStatus('checking')
+    debounceRef.current = setTimeout(async () => {
+      try {
+        const res = await fetch(`/api/afiliados/verificar-codigo?codigo=${encodeURIComponent(cod)}`)
+        const data = await res.json()
+        if (data.available) {
+          setCodigoStatus('available')
+          setCodigoSugestao(null)
+        } else {
+          setCodigoStatus('taken')
+          setCodigoSugestao(data.sugestao || null)
+        }
+      } catch {
+        setCodigoStatus('idle')
+      }
+    }, 600)
+  }
 
   function handleNome(v: string) {
     setNome(v)
-    if (!codigo) setCodigo(gerarCodigo(v))
+    if (!codigoManualRef.current) {
+      const gerado = gerarCodigo(v)
+      setCodigo(gerado)
+      verificarCodigo(gerado)
+    }
   }
+
+  function handleCodigo(v: string) {
+    const limpo = v.toLowerCase().replace(/[^a-z0-9]/g, '')
+    codigoManualRef.current = limpo.length > 0
+    setCodigo(limpo)
+    verificarCodigo(limpo)
+  }
+
+  function aceitarSugestao() {
+    if (!codigoSugestao) return
+    codigoManualRef.current = true
+    setCodigo(codigoSugestao)
+    setCodigoSugestao(null)
+    verificarCodigo(codigoSugestao)
+  }
+
+  // quando o nome é apagado completamente, volta a seguir o nome
+  useEffect(() => {
+    if (!nome) {
+      codigoManualRef.current = false
+      setCodigo('')
+      setCodigoStatus('idle')
+      setCodigoSugestao(null)
+    }
+  }, [nome])
 
   async function cadastrar() {
     setErro('')
     if (!nome || !email || !senha || !whatsapp || !chavePix || !codigo) {
       setErro('Preencha todos os campos.'); return
+    }
+    if (codigoStatus === 'taken') {
+      setErro('Esse código já está em uso. Escolha outro ou aceite a sugestão.'); return
     }
     setLoading(true)
     try {
@@ -44,6 +104,14 @@ export default function CadastroAfiliado() {
     }
   }
 
+  const statusIcon = codigoStatus === 'checking'
+    ? <span className="cod-checking">⏳</span>
+    : codigoStatus === 'available'
+      ? <span className="cod-ok">✓ disponível</span>
+      : codigoStatus === 'taken'
+        ? <span className="cod-taken">✗ em uso</span>
+        : null
+
   return (
     <>
       <style>{`
@@ -57,7 +125,15 @@ export default function CadastroAfiliado() {
         .f label{display:block;font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text3);margin-bottom:0.35rem}
         .f input,.f select{width:100%;padding:0.8rem 1rem;background:var(--bg3);border:1.5px solid var(--border);border-radius:10px;font-family:var(--font-s);font-size:0.93rem;color:var(--text);outline:none;transition:border-color 0.2s}
         .f input:focus,.f select:focus{border-color:rgba(124,58,237,0.4);box-shadow:0 0 0 3px rgba(124,58,237,0.07)}
+        .f input.cod-input-ok{border-color:#16a34a !important}
+        .f input.cod-input-taken{border-color:#dc2626 !important}
         .f-hint{font-size:0.68rem;color:var(--text3);margin-top:0.25rem}
+        .cod-status-row{display:flex;align-items:center;justify-content:space-between;margin-top:0.3rem;min-height:1.2rem}
+        .cod-checking{font-size:0.68rem;color:var(--text3)}
+        .cod-ok{font-size:0.68rem;font-weight:700;color:#16a34a}
+        .cod-taken{font-size:0.68rem;font-weight:700;color:#dc2626}
+        .cod-sugestao{font-size:0.68rem;color:var(--text3)}
+        .cod-sugestao button{background:none;border:none;color:#7c3aed;font-weight:700;cursor:pointer;font-size:0.68rem;padding:0;text-decoration:underline}
         .btn-af{width:100%;padding:1rem;margin-top:0.75rem;background:#7c3aed;color:#fff;border:none;border-radius:10px;font-family:var(--font-s);font-size:1rem;font-weight:800;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center}
         .btn-af:hover:not(:disabled){background:#6d28d9;transform:translateY(-1px)}
         .btn-af:disabled{opacity:0.6;cursor:not-allowed}
@@ -105,15 +181,28 @@ export default function CadastroAfiliado() {
           <label>Seu código de afiliada</label>
           <input
             value={codigo}
-            onChange={e => setCodigo(e.target.value.toLowerCase().replace(/[^a-z0-9]/g, ''))}
-            placeholder="Ex: mariasilva"
+            onChange={e => handleCodigo(e.target.value)}
+            placeholder="Ex: maria"
+            className={
+              codigoStatus === 'available' ? 'cod-input-ok'
+              : codigoStatus === 'taken' ? 'cod-input-taken'
+              : ''
+            }
           />
+          <div className="cod-status-row">
+            <div>{statusIcon}</div>
+            {codigoStatus === 'taken' && codigoSugestao && (
+              <div className="cod-sugestao">
+                Usar <button onClick={aceitarSugestao}>{codigoSugestao}</button>?
+              </div>
+            )}
+          </div>
           <div className="f-hint">
-            Seu link ficará: calculadoraprecifique.com/?ref={codigo || 'seucodigo'}
+            Seu link ficará: calculadoraprecifique.com/?ref=<strong>{codigo || 'seucodigo'}</strong>
           </div>
         </div>
 
-        <button className="btn-af" onClick={cadastrar} disabled={loading}>
+        <button className="btn-af" onClick={cadastrar} disabled={loading || codigoStatus === 'checking'}>
           {loading ? <span className="spinner" /> : 'Criar conta e acessar painel →'}
         </button>
         {erro && <div className="err">{erro}</div>}
