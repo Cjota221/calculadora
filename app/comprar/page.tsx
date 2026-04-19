@@ -253,7 +253,7 @@ export default function ComprarPage() {
       <div className="buy-card">
         <div className="buy-brand"><span>Precifique</span><span style={{ color: 'var(--pink)' }}>.</span></div>
         <h2 className="buy-title">Garanta seu acesso</h2>
-        <p className="buy-sub">Paga uma vez · Acesso para sempre · <strong style={{ color: 'var(--pink)' }}>R$ 24,99</strong></p>
+        <p className="buy-sub">Paga uma vez · Acesso para sempre · <strong style={{ color: 'var(--pink)' }}>R$ 37,90</strong></p>
 
         {/* Cadastro */}
         <div className="buy-section-label">Seus dados</div>
@@ -352,7 +352,7 @@ export default function ComprarPage() {
         <button className="btn-pagar" onClick={pagar} disabled={loading}>
           {loading
             ? <span className="spinner" />
-            : metodo === 'pix' ? 'Gerar Pix — R$ 24,99' : 'Pagar R$ 24,99 no cartão'}
+            : metodo === 'pix' ? 'Gerar Pix — R$ 37,90' : 'Pagar R$ 37,90 no cartão'}
         </button>
 
         <div className="buy-seguro">
