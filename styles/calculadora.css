@@ -216,6 +216,24 @@ footer { text-align: center; padding: 2rem 1rem 5rem; border-top: 1px solid var(
 .wpp-float:hover { background: #1ebe5a; transform: scale(1.04); box-shadow: 0 6px 28px rgba(37,211,102,0.6); }
 @media (max-width: 400px) { .wpp-float span { display: none; } .wpp-float { padding: 0.85rem; border-radius: 50%; } }
 
+/* ── Preço Editável ──────────────────────────────────── */
+.pe-wrapper { margin-bottom: 0.4rem; }
+.pe-view { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+.pe-lapis { background: none; border: none; cursor: pointer; color: var(--text3); padding: 4px; border-radius: 6px; display: flex; align-items: center; transition: color 0.2s, background 0.2s; }
+.pe-lapis:hover { color: var(--pink); background: var(--pink-dim); }
+.pe-badge { font-size: 0.68rem; background: #fef3c7; color: #92400e; border: 1px solid #fde68a; border-radius: 20px; padding: 2px 8px; font-weight: 600; }
+.pe-edit { display: flex; align-items: center; gap: 6px; background: var(--bg); border: 2px solid var(--pink); border-radius: var(--radius); padding: 0.4rem 0.75rem; }
+.pe-prefix { font-size: 1.1rem; font-weight: 700; color: var(--pink); }
+.pe-input { border: none; outline: none; background: transparent; font-size: 1.5rem; font-weight: 800; color: var(--text); width: 110px; font-family: var(--font-d); }
+.pe-input::-webkit-inner-spin-button, .pe-input::-webkit-outer-spin-button { -webkit-appearance: none; }
+.pe-btn { border: none; border-radius: 6px; width: 28px; height: 28px; cursor: pointer; font-size: 0.85rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.pe-confirm { background: var(--pink); color: #fff; }
+.pe-confirm:hover { filter: brightness(1.1); }
+.pe-cancel { background: var(--bg3); color: var(--text3); }
+.pe-cancel:hover { background: var(--border); }
+.pe-margem { font-size: var(--fs-xs); color: var(--text3); margin-left: 0.25rem; }
+.pe-margem strong { color: var(--pink); }
+
 /* ── Preço Praticado ─────────────────────────────────── */
 .pp-wrapper { margin-top: 1rem; padding-top: 1rem; border-top: 1px dashed rgba(124,58,237,0.25); }
 .pp-label { display: flex; flex-direction: column; gap: 2px; margin-bottom: 0.5rem; }

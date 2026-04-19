@@ -5,6 +5,7 @@ import { TaxaRow } from './TaxaRow'
 import { MargemIndicator } from './MargemIndicator'
 import { PromoSection } from './PromoSection'
 import { PrecoPraticado } from './PrecoPraticado'
+import { PrecoEditavel } from './PrecoEditavel'
 
 interface TabPrecificarProps {
   cost: string
@@ -136,12 +137,11 @@ export function TabPrecificar({
         <>
           <div className="result res-pink">
             <div className="res-label c-pink">Preço ideal de venda</div>
-            <div className="res-price c-pink">{fmt(result.price)}</div>
+            <PrecoEditavel result={result} />
             <div className="res-meta">
               Custo base: {fmt(result.base)}
               {result.taxaPct > 0 && `  ·  Taxas (${result.taxaPct.toFixed(1)}%): ${fmt(result.taxaAmt)}`}
             </div>
-            <div className="res-profit">Lucro líquido por unidade: <strong>{fmt(result.profit)}</strong></div>
             <MargemIndicator
               level={result.margemLevel}
               label={result.margemLabel}
